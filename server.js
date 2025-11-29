@@ -6,7 +6,7 @@ const { Octokit } = require('octokit');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// --- TUS DATOS DEL REPOSITORIO ---
+// --- DATOS GITHUB ---
 const GITHUB_OWNER = "Gabrioff"; 
 const GITHUB_REPO = "backend-memecoin";
 const DB_PATH = "database.json"; 
@@ -14,33 +14,33 @@ const DB_PATH = "database.json";
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 if (!GITHUB_TOKEN) {
-    console.error("❌ CRÍTICO: Falta GITHUB_TOKEN en las variables de entorno.");
+    console.error("❌ CRÍTICO: Falta GITHUB_TOKEN.");
     process.exit(1);
 }
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
-// Aumentamos el límite para permitir gráficos grandes y muchos usuarios
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 
-// --- ESTADO EN MEMORIA (LA VERDAD ABSOLUTA DEL JUEGO) ---
+// --- BASE DE DATOS EN MEMORIA ---
+// Añadimos 'bots' para guardar su estado (balance, wins, losses)
 let memoryDb = { 
     users: {}, 
     tokens: {}, 
     transfers: [], 
-    chat: [] 
+    chat: [],
+    bots: [] 
 };
 
-let fileSha = null;     // El identificador del archivo en GitHub
-let isDirty = false;    // ¿Hay cambios sin guardar?
-let isSaving = false;   // ¿Estamos guardando ahora mismo?
+let fileSha = null;
+let isDirty = false;
+let isSaving = false;
 
-// --- SISTEMA DE PERSISTENCIA ROBUSTO ---
+// --- PERSISTENCIA ---
 
-// 1. Cargar datos al iniciar (SOLO UNA VEZ)
 async function initStorage() {
-    console.log(`🔄 [INICIO] Conectando con GitHub (${GITHUB_OWNER}/${GITHUB_REPO})...`);
+    console.log(`🔄 Conectando a GitHub...`);
     try {
         const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
             owner: GITHUB_OWNER,
@@ -52,26 +52,25 @@ async function initStorage() {
         const content = Buffer.from(data.content, 'base64').toString('utf-8');
         const json = JSON.parse(content);
 
-        // Fusión inicial segura: Recuperamos lo que había
         memoryDb = {
             users: json.users || {},
             tokens: json.tokens || {},
             transfers: json.transfers || [],
-            chat: json.chat || []
+            chat: json.chat || [],
+            bots: json.bots || [] // Cargar bots guardados
         };
 
-        console.log(`✅ [CARGADO] DB Restaurada. Usuarios: ${Object.keys(memoryDb.users).length} | Tokens: ${Object.keys(memoryDb.tokens).length}`);
+        console.log(`✅ DB Cargada. Bots recuperados: ${memoryDb.bots.length}`);
     } catch (error) {
         if (error.status === 404) {
-            console.log("🆕 [NUEVO] No existe base de datos previa. Se creará una nueva.");
+            console.log("🆕 Creando nueva DB.");
             isDirty = true;
         } else {
-            console.error("❌ [ERROR FATAL] No se pudo leer GitHub:", error.status);
+            console.error("❌ Error GitHub:", error.status);
         }
     }
 }
 
-// 2. Función para obtener el último SHA sin descargar todo el archivo (para corregir conflictos)
 async function refreshSha() {
     try {
         const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
@@ -80,184 +79,119 @@ async function refreshSha() {
             path: DB_PATH,
         });
         fileSha = data.sha;
-        console.log("🔄 [SHA] Sincronizado hash remoto:", fileSha);
         return true;
-    } catch (e) {
-        console.error("⚠️ [SHA] Error obteniendo hash:", e.message);
-        return false;
-    }
+    } catch (e) { return false; }
 }
 
-// 3. El Guardián del Guardado (Evita colisiones y guarda cada 1s si es necesario)
 async function saveToRepo() {
-    // Si no hay cambios o ya estamos guardando, no hacemos nada
     if (!isDirty || isSaving) return;
-
-    isSaving = true; // Bloqueamos el proceso de guardado
-    const startTime = Date.now();
+    isSaving = true;
 
     try {
-        const contentToSave = JSON.stringify(memoryDb, null, 2);
-        const contentEncoded = Buffer.from(contentToSave).toString('base64');
-
-        // Intentamos guardar
+        const content = Buffer.from(JSON.stringify(memoryDb, null, 2)).toString('base64');
         const res = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
             owner: GITHUB_OWNER,
             repo: GITHUB_REPO,
             path: DB_PATH,
             message: `Auto-save: ${new Date().toISOString()}`,
-            content: contentEncoded,
-            sha: fileSha // Necesario para actualizar
+            content: content,
+            sha: fileSha
         });
-
-        // Si llegamos aquí, fue éxito
         fileSha = res.data.content.sha;
-        isDirty = false; // Marcamos como "limpio"
-        const duration = Date.now() - startTime;
-        console.log(`💾 [GUARDADO] Éxito en ${duration}ms. SHA actualizado.`);
-
+        isDirty = false;
+        console.log("💾 Guardado OK.");
     } catch (error) {
-        console.error(`❌ [ERROR GUARDANDO] ${error.message}`);
-
-        // Manejo especial del error 409 (Conflicto: alguien/algo modificó el archivo remotamente)
-        if (error.status === 409) {
-            console.log("⚠️ [CONFLICTO] El SHA remoto cambió. Obteniendo nuevo SHA y reintentando...");
-            const shaUpdated = await refreshSha();
-            if (shaUpdated) {
-                // No ponemos isDirty = false, para que el próximo ciclo intente guardar de nuevo con el nuevo SHA
-                console.log("🔄 Listo para reintentar en el siguiente ciclo.");
-            }
-        }
-        // Si es otro error, simplemente se reintentará en el siguiente ciclo porque isDirty sigue true
+        console.error(`❌ Error Guardado: ${error.message}`);
+        if (error.status === 409) await refreshSha();
     } finally {
-        isSaving = false; // Liberamos el bloqueo
+        isSaving = false;
     }
 }
 
-// --- CICLOS DE VIDA ---
-
-// Iniciar carga
 initStorage();
-
-// Bucle de guardado optimizado (Cada 1000ms / 1 segundo)
-// Usamos setInterval pero protegido por la variable isSaving
 setInterval(saveToRepo, 1000);
 
-// Guardado de Emergencia: Si el servidor se apaga, intenta guardar una última vez
-async function emergencySave() {
-    console.log("🛑 [APAGADO] Intentando guardado de emergencia...");
-    if (isDirty) {
-        await saveToRepo();
-    }
-    process.exit(0);
-}
-process.on('SIGTERM', emergencySave);
-process.on('SIGINT', emergencySave);
+// --- API ---
 
+app.get('/', (req, res) => res.send('Server Online v3.0 (Bots Persistentes)'));
 
-// --- API DE ALTA VELOCIDAD ---
-
-app.get('/', (req, res) => res.send('Game Server Online & Persisting v2.0'));
-
-// Carga inicial del cliente
 app.get('/api/load', (req, res) => {
     res.json({ success: true, data: memoryDb });
 });
 
-// Stream de datos (El corazón del juego)
 app.post('/api/stream', (req, res) => {
-    // Respondemos INMEDIATAMENTE para tener el ping bajo (30ms target)
-    // Procesamos los datos asíncronamente
     res.json({ success: true }); 
 
     const { data } = req.body;
     if (!data) return;
 
-    let changesDetected = false;
+    let changes = false;
 
-    // 1. Usuarios: Mezcla inteligente
+    // 1. Usuarios
     if (data.users) {
-        // No sobrescribimos todo el objeto users, vamos uno por uno
-        Object.keys(data.users).forEach(username => {
-            // Solo actualizamos si hay cambios reales o es nuevo
-            if (!memoryDb.users[username]) {
-                memoryDb.users[username] = data.users[username];
-                changesDetected = true;
-            } else {
-                // Actualizamos saldo y holdings
-                // Nota: Asumimos que el cliente envía el estado más reciente de SU usuario
-                memoryDb.users[username] = { ...memoryDb.users[username], ...data.users[username] };
-                changesDetected = true;
+        Object.keys(data.users).forEach(u => {
+            if (!memoryDb.users[u] || JSON.stringify(memoryDb.users[u]) !== JSON.stringify(data.users[u])) {
+                memoryDb.users[u] = { ...(memoryDb.users[u] || {}), ...data.users[u] };
+                changes = true;
             }
         });
     }
 
-    // 2. Transferencias: Solo añadir nuevas
-    if (data.transfers) {
-        data.transfers.forEach(tx => {
-            const exists = memoryDb.transfers.find(x => x.id === tx.id);
-            if (!exists) {
-                memoryDb.transfers.push(tx);
-                changesDetected = true;
-            } else if (exists && tx.claimed && !exists.claimed) {
-                // Si se reclamó, actualizamos estado
-                exists.claimed = true;
-                changesDetected = true;
-            }
-        });
-    }
-
-    // 3. Tokens: Lo más delicado (Precios, Gráficas, MarketCap)
+    // 2. Tokens (y toda su info interna: holders, chart, etc)
     if (data.tokens) {
         Object.keys(data.tokens).forEach(tid => {
-            const incoming = data.tokens[tid];
-            const existing = memoryDb.tokens[tid];
-
-            if (!existing) {
-                memoryDb.tokens[tid] = incoming;
-                changesDetected = true;
+            const inc = data.tokens[tid];
+            const ext = memoryDb.tokens[tid];
+            if (!ext) {
+                memoryDb.tokens[tid] = inc;
+                changes = true;
             } else {
-                // Lógica de fusión para no perder datos
+                // Actualización inteligente
+                ext.marketCap = inc.marketCap;
+                ext.price = inc.price;
+                ext.liquidityDepth = inc.liquidityDepth;
+                ext.conviction = inc.conviction;
                 
-                // Si el token entrante tiene un tradeLog más nuevo, lo usamos
-                // (Opcional: podrías implementar lógica más compleja aquí)
+                // Guardar Holders (incluyendo bots holders)
+                if(inc.holders) ext.holders = inc.holders;
                 
-                // Actualizamos campos clave
-                existing.marketCap = incoming.marketCap;
-                existing.price = incoming.price;
-                existing.liquidityDepth = incoming.liquidityDepth;
-                existing.holders = incoming.holders || existing.holders; // Prioridad al nuevo, pero fallback al viejo
+                // Guardar Gráficas
+                if (inc.chartData) ext.chartData = inc.chartData;
                 
-                // Gráficas: Las gráficas son pesadas. 
-                // Solo actualizamos si el cliente tiene datos (normalmente el creador o quien tradea envía updates)
-                if (incoming.chartData) {
-                    // Mezcla simple: confiamos en el dato entrante si existe
-                    // Para perfección, el cliente debería enviar solo los nuevos puntos, 
-                    // pero aquí aceptamos el objeto completo para asegurar sincronía.
-                    existing.chartData = incoming.chartData;
-                }
+                // Guardar Listas Top/Rekt
+                if (inc.topTrades) ext.topTrades = inc.topTrades;
+                if (inc.rektTrades) ext.rektTrades = inc.rektTrades;
                 
-                if (incoming.tradeLog && incoming.tradeLog.length > 0) {
-                    existing.tradeLog = incoming.tradeLog;
-                }
-
-                changesDetected = true;
+                changes = true;
             }
         });
     }
 
-    // 4. Chat (Si lo usas en el futuro)
-    if (data.chat) {
-        memoryDb.chat = data.chat;
-        changesDetected = true;
+    // 3. Bots (NUEVO: Guardar estado de los bots)
+    if (data.bots && data.bots.length > 0) {
+        // Si recibimos datos de bots, actualizamos. 
+        // Asumimos que el cliente tiene la versión más reciente de la simulación.
+        memoryDb.bots = data.bots;
+        changes = true;
     }
 
-    if (changesDetected) {
-        isDirty = true; // Activa el guardado en el próximo ciclo de 1 segundo
+    // 4. Transferencias
+    if (data.transfers) {
+        data.transfers.forEach(tx => {
+            if(!memoryDb.transfers.find(x => x.id === tx.id)) {
+                memoryDb.transfers.push(tx);
+                changes = true;
+            } else {
+                const ex = memoryDb.transfers.find(x => x.id === tx.id);
+                if(ex && tx.claimed && !ex.claimed) {
+                    ex.claimed = true;
+                    changes = true;
+                }
+            }
+        });
     }
+
+    if (changes) isDirty = true;
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor Maestro corriendo en puerto ${PORT}`);
-    console.log(`⏱️ Sistema de persistencia GitHub activo: Intervalo 1000ms`);
-});
+app.listen(PORT, () => console.log(`🚀 Server en puerto ${PORT}`));
