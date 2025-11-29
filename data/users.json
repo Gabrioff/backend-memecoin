@@ -52,5 +52,10 @@
   "LAPUTAMADRE": {
     "usd": 100,
     "holdings": {}
+  },
+  "ADMIN": {
+    "usd": 100,
+    "holdings": {},
+    "pass": "12345678"
   }
 }
