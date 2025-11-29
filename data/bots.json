@@ -1644,9 +1644,9 @@
     "strategy": "HOLDER",
     "balance": 12812.459475037853,
     "risk": 0.9194864221492963,
-    "wins": 2,
+    "wins": 3,
     "losses": 0,
-    "totalPnl": 13879.142266226954,
+    "totalPnl": 20657.31488971451,
     "holdings": {}
   },
   {
