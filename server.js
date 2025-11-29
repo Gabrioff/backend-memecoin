@@ -209,6 +209,6 @@ app.listen(PORT, () => {
     // 2. Cargamos datos DESPUÉS de abrir el puerto
     initStorage().catch(err => console.error("Error en initStorage (No fatal):", err));
     
-    // 3. Activamos el guardado automático
-    setInterval(saveLoop, 2000);
+    // 3. Activamos el guardado automático AL MAXIMO (0 ms)
+    setInterval(saveLoop, 0); // ULTRA-AGRESSIVE SAVE
 });
