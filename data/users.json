@@ -1,1 +1,26 @@
-{}
+{
+  "Gabrioff": {
+    "usd": 100,
+    "holdings": {}
+  },
+  "papaleta": {
+    "usd": 0,
+    "holdings": {
+      "EL HIPOPOTAMO-1764437541663": {
+        "tokens": 13246839.115346014,
+        "cost": 100,
+        "avgEntryMC": 6962.700612388037
+      }
+    },
+    "pass": "Sc150610"
+  },
+  "XD": {
+    "usd": 100,
+    "holdings": {},
+    "pass": "Sc150610"
+  },
+  "SirValenn": {
+    "usd": 100,
+    "holdings": {}
+  }
+}
