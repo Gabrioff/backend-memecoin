@@ -44,9 +44,9 @@
     "strategy": "SCALPER",
     "balance": 10523.911265707557,
     "risk": 0.5947684780460855,
-    "wins": 1,
+    "wins": 2,
     "losses": 3,
-    "totalPnl": 43.03475971117992,
+    "totalPnl": 584.6086586474388,
     "holdings": {}
   },
   {
@@ -294,9 +294,9 @@
     "strategy": "DEGEN",
     "balance": 10771.260685618483,
     "risk": 0.3538892265712692,
-    "wins": 0,
+    "wins": 5,
     "losses": 5,
-    "totalPnl": -84.63934520042596,
+    "totalPnl": 2332432123477.005,
     "holdings": {}
   },
   {
@@ -364,9 +364,9 @@
     "strategy": "SCALPER",
     "balance": 12858.1959475698,
     "risk": 0.7517564838577796,
-    "wins": 1,
+    "wins": 5,
     "losses": 0,
-    "totalPnl": 8.93584424792654,
+    "totalPnl": 18214.759295686363,
     "holdings": {}
   },
   {
@@ -374,9 +374,9 @@
     "strategy": "HOLDER",
     "balance": 13258.854758073028,
     "risk": 0.8275818934093183,
-    "wins": 0,
+    "wins": 1,
     "losses": 0,
-    "totalPnl": 0,
+    "totalPnl": 20622765.187126413,
     "holdings": {}
   },
   {
@@ -534,9 +534,9 @@
     "strategy": "SCALPER",
     "balance": 12679.754372249527,
     "risk": 0.2961010702864334,
-    "wins": 17,
-    "losses": 3,
-    "totalPnl": 57225.95533008458,
+    "wins": 26,
+    "losses": 6,
+    "totalPnl": 13533100749781.973,
     "holdings": {}
   },
   {
@@ -804,9 +804,9 @@
     "strategy": "SCALPER",
     "balance": 11711.288627424325,
     "risk": 0.6101319657190741,
-    "wins": 13,
+    "wins": 14,
     "losses": 9,
-    "totalPnl": -186.09686889388107,
+    "totalPnl": 580.6138996527842,
     "holdings": {}
   },
   {
@@ -1154,9 +1154,9 @@
     "strategy": "DEGEN",
     "balance": 11616.28405333947,
     "risk": 0.5612930554008211,
-    "wins": 0,
+    "wins": 1,
     "losses": 3,
-    "totalPnl": -80.19889455134776,
+    "totalPnl": 830.5920411936078,
     "holdings": {}
   },
   {
@@ -1644,9 +1644,9 @@
     "strategy": "HOLDER",
     "balance": 12812.459475037853,
     "risk": 0.9194864221492963,
-    "wins": 4,
+    "wins": 11,
     "losses": 0,
-    "totalPnl": 24046.398448361175,
+    "totalPnl": 1.6663037350713134e+29,
     "holdings": {}
   },
   {
