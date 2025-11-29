@@ -634,9 +634,9 @@
     "strategy": "HOLDER",
     "balance": 12933.228065471612,
     "risk": 0.030181740786373923,
-    "wins": 5,
+    "wins": 6,
     "losses": 0,
-    "totalPnl": 751225367.108099,
+    "totalPnl": 2844008253.741438,
     "holdings": {}
   },
   {
@@ -1684,9 +1684,9 @@
     "strategy": "SCALPER",
     "balance": 12193.206661437449,
     "risk": 0.9893190447256061,
-    "wins": 8,
+    "wins": 10,
     "losses": 1,
-    "totalPnl": 9125866.1179654,
+    "totalPnl": 9125899.336935347,
     "holdings": {}
   },
   {
