@@ -1394,9 +1394,9 @@
     "strategy": "SCALPER",
     "balance": 10013.00001538905,
     "risk": 0.3204829998376969,
-    "wins": 0,
+    "wins": 1,
     "losses": 0,
-    "totalPnl": 0,
+    "totalPnl": 5.244167062416025,
     "holdings": {}
   },
   {
