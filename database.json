@@ -3,6 +3,11 @@
     "Gabrioff": {
       "usd": 100,
       "holdings": {}
+    },
+    "papaleta": {
+      "usd": 100,
+      "holdings": {},
+      "pass": "Sc150610"
     }
   },
   "tokens": {
