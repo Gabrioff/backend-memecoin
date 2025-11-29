@@ -54,8 +54,14 @@
     "holdings": {}
   },
   "ADMIN": {
-    "usd": 100,
-    "holdings": {},
+    "usd": 99.99999999972411,
+    "holdings": {
+      "FLOW-1764450019087": {
+        "tokens": 0,
+        "cost": 0,
+        "avgEntryMC": 326203610265034.56
+      }
+    },
     "pass": "12345678"
   }
 }
