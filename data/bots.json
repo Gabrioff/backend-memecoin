@@ -225,8 +225,8 @@
     "balance": 13340.3723090916,
     "risk": 0.5661434255830989,
     "wins": 0,
-    "losses": 0,
-    "totalPnl": 0,
+    "losses": 1,
+    "totalPnl": -47.82330276454258,
     "holdings": {}
   },
   {
