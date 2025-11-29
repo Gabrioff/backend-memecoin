@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { Octokit } = require('octokit');
-const fetch = require('node-fetch'); // <--- EL SALVAVIDAS (Cable manual a internet)
+const fetch = require('node-fetch'); // <--- Esto funcionará cuando subas el package.json
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,7 +21,7 @@ if (!GITHUB_TOKEN) {
 const octokit = new Octokit({ 
     auth: GITHUB_TOKEN,
     request: {
-        fetch: fetch // <--- Aquí forzamos el uso de node-fetch
+        fetch: fetch 
     },
     log: { debug: () => {}, info: () => {}, warn: console.warn, error: console.error }
 });
@@ -59,11 +59,10 @@ async function initStorage() {
                 col.data = JSON.parse(rawContent);
                 console.log(`   ✅ CARGADO: ${key}`);
             } catch (parseError) {
-                // AQUÍ OCURRE LA MAGIA DE LA REPARACIÓN
                 console.warn(`   ⚠️ CORRUPCIÓN DETECTADA en ${key}: ${parseError.message}`);
                 console.log(`   🔧 REPARANDO ${key}... (Reiniciando archivo)`);
                 col.data = (key === 'bots' || key === 'transfers') ? [] : {};
-                col.dirty = true; // Marcar para sobrescribir el archivo corrupto en GitHub
+                col.dirty = true; 
             }
 
         } catch (error) {
