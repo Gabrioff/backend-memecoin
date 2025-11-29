@@ -32,108 +32,124 @@ let memoryDb = {
 let gistId = null;
 let isDirty = false; // Marca si hay cambios sin guardar
 
-// --- FUNCIONES GIST ---
+// --- FUNCIONES GIST (PERSISTENCIA) ---
 
-// 1. Buscar si ya existe un guardado al iniciar
+// 1. BUSCAR GUARDADO AL INICIAR (La clave para que no se borre)
 async function initializeStorage() {
     if (!octokit) return;
     
-    console.log("🔄 Buscando datos guardados en GitHub Gists...");
+    console.log("🔄 Arrancando servidor... Buscando datos previos en GitHub...");
     try {
+        // Listar los gists del usuario
         const gists = await octokit.request('GET /gists');
+        // Buscar uno que tenga nuestro nombre de archivo
         const found = gists.data.find(g => g.files && g.files[GIST_FILENAME]);
 
         if (found) {
             gistId = found.id;
-            console.log(`✅ Gist encontrado (ID: ${gistId}). Cargando datos...`);
+            console.log(`✅ ¡ARCHIVO ENCONTRADO! (ID: ${gistId}). Descargando datos...`);
+            
+            // Descargar el contenido
             const content = await octokit.request('GET /gists/{gist_id}', { gist_id: gistId });
             const rawBody = content.data.files[GIST_FILENAME].content;
+            
             if (rawBody) {
                 memoryDb = JSON.parse(rawBody);
-                console.log(`📦 Datos cargados: ${Object.keys(memoryDb.tokens).length} tokens, ${Object.keys(memoryDb.users).length} usuarios.`);
+                console.log(`📦 Datos restaurados exitosamente:`);
+                console.log(`   - Tokens: ${Object.keys(memoryDb.tokens || {}).length}`);
+                console.log(`   - Usuarios: ${Object.keys(memoryDb.users || {}).length}`);
             }
         } else {
-            console.log("✨ No se encontró guardado previo. Se creará uno nuevo al primer cambio.");
+            console.log("✨ No se encontró archivo previo. Se creará uno nuevo automáticamente al guardar.");
         }
     } catch (error) {
-        console.error("❌ Error inicializando Gist:", error.message);
+        console.error("❌ Error grave inicializando Gist:", error.message);
     }
 }
 
-// 2. Guardar datos en GitHub
+// 2. GUARDAR DATOS EN GITHUB
 async function persistData() {
     if (!octokit || !isDirty) return;
     
-    isDirty = false; // Reset flag antes de intentar para evitar bucles si falla lento
-    const payload = JSON.stringify(memoryDb);
+    // Copia de seguridad antes de resetear flag
+    const payload = JSON.stringify(memoryDb, null, 2); // Pretty print para poder leerlo en github si quieres
+    isDirty = false; 
 
     try {
         if (!gistId) {
-            // Crear nuevo
+            // Si no tenemos ID, CREAMOS uno nuevo
+            console.log("💾 Creando archivo nuevo en GitHub...");
             const res = await octokit.request('POST /gists', {
-                description: 'Memecoin Tycoon Database (Do not delete)',
+                description: 'BASE DE DATOS JUEGO MEMECOIN (NO BORRAR)',
                 public: false,
                 files: { [GIST_FILENAME]: { content: payload } }
             });
             gistId = res.data.id;
-            console.log(`💾 NUEVO Gist creado: ${gistId}`);
+            console.log(`✅ Archivo creado. ID: ${gistId}`);
         } else {
-            // Actualizar existente
+            // Si ya tenemos ID, ACTUALIZAMOS el existente
             await octokit.request('PATCH /gists/{gist_id}', {
                 gist_id: gistId,
                 files: { [GIST_FILENAME]: { content: payload } }
             });
-            console.log(`💾 Gist actualizado @ ${new Date().toLocaleTimeString()}`);
+            console.log(`💾 Guardado en la nube completado @ ${new Date().toLocaleTimeString()}`);
         }
     } catch (error) {
         console.error("❌ Error guardando en GitHub:", error.message);
-        isDirty = true; // Reintentar luego
+        isDirty = true; // Volver a intentar en el próximo ciclo
     }
 }
 
-// Inicializar al arrancar
+// Inicializar la búsqueda al encender el servidor
 initializeStorage();
 
-// Loop de guardado automático (cada 5s para no saturar API)
+// Guardar cada 5 segundos si hubo cambios (para no saturar GitHub)
 setInterval(persistData, 5000);
 
 
 // --- API ENDPOINTS ---
 
-app.get('/', (req, res) => res.send(`Memecoin Server Online 🟢 | Gist ID: ${gistId || 'Pendiente'}`));
+app.get('/', (req, res) => res.send(`Memecoin Server Online 🟢 | Estado: ${gistId ? 'CONECTADO A GITHUB' : 'MEMORIA LOCAL'} | Tokens: ${Object.keys(memoryDb.tokens).length}`));
 
 // Cargar todo el estado (Cliente -> Servidor)
 app.get('/api/load', (req, res) => {
     res.json({ success: true, data: memoryDb });
 });
 
-// Recibir actualizaciones (Servidor <- Cliente)
+// Recibir actualizaciones (Cliente -> Servidor)
 app.post('/api/stream', (req, res) => {
     const { data } = req.body;
     
     if (!data) return res.status(400).send({ error: 'No data' });
 
-    // Fusión inteligente de datos
-    // 1. Usuarios: Sobrescribir o añadir
-    if(data.users) {
-        memoryDb.users = { ...memoryDb.users, ...data.users };
+    // Fusión de datos para no perder nada
+    if(data.users) memoryDb.users = { ...memoryDb.users, ...data.users };
+    if(data.transfers) {
+        data.transfers.forEach(tx => {
+            if(!memoryDb.transfers.find(t => t.id === tx.id)) memoryDb.transfers.push(tx);
+            else {
+                const ex = memoryDb.transfers.find(t => t.id === tx.id);
+                if(ex) ex.claimed = tx.claimed;
+            }
+        });
     }
     
-    // 2. Tokens: Fusión profunda para no perder gráficas de otros
+    // Fusión profunda de tokens para guardar gráficas
     if(data.tokens) {
         Object.keys(data.tokens).forEach(tid => {
             const incoming = data.tokens[tid];
             const existing = memoryDb.tokens[tid];
 
             if (!existing) {
-                memoryDb.tokens[tid] = incoming; // Nuevo token
+                memoryDb.tokens[tid] = incoming;
             } else {
-                // Actualizar precio y stats básicos
+                // Actualizar propiedades clave
                 existing.marketCap = incoming.marketCap;
-                existing.holders = incoming.holders; // Ojo: esto es simple, idealmente fusionar
+                existing.holders = incoming.holders;
+                existing.liquidityDepth = incoming.liquidityDepth;
+                existing.tradeLog = incoming.tradeLog; // Logs de transacciones
                 
-                // Gráficas: Solo añadir velas nuevas si el cliente tiene más datos recientes
-                // (Para simplificar, confiamos en que el cliente activo tiene la verdad del momento)
+                // IMPORTANTE: Guardar la gráfica
                 if(incoming.chartData) {
                     existing.chartData = incoming.chartData;
                 }
@@ -141,21 +157,7 @@ app.post('/api/stream', (req, res) => {
         });
     }
 
-    // 3. Transferencias: Añadir nuevas
-    if(data.transfers) {
-        // Evitar duplicados por ID
-        data.transfers.forEach(tx => {
-            if(!memoryDb.transfers.find(t => t.id === tx.id)) {
-                memoryDb.transfers.push(tx);
-            } else {
-                // Actualizar estado (claimed)
-                const existingTx = memoryDb.transfers.find(t => t.id === tx.id);
-                if(existingTx) existingTx.claimed = tx.claimed;
-            }
-        });
-    }
-
-    isDirty = true; // Marcar para guardar en GitHub
+    isDirty = true; // Avisar que hay que guardar en GitHub
     res.json({ success: true });
 });
 
