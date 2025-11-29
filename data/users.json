@@ -22,5 +22,10 @@
   "SirValenn": {
     "usd": 100,
     "holdings": {}
+  },
+  "Pepe": {
+    "usd": 100,
+    "holdings": {},
+    "pass": "Sc150610"
   }
 }
