@@ -24,7 +24,7 @@
     "holdings": {}
   },
   "Pepe": {
-    "usd": 20112.7485595119319,
+    "usd": 15102.748559511932,
     "holdings": {
       "XDD-1764446901541": {
         "tokens": 0,
@@ -35,6 +35,11 @@
         "tokens": 0,
         "cost": 0,
         "avgEntryMC": 5050
+      },
+      "CLASH ROYAL-1764448919199": {
+        "tokens": 555555555.5555556,
+        "cost": 5000,
+        "avgEntryMC": 10000
       }
     },
     "pass": "Sc150610"
