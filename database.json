@@ -1,14 +1,8 @@
 {
   "users": {
     "Gabrioff": {
-      "usd": 20,
-      "holdings": {
-        "EL HIPOPOTAMO-1764437541663": {
-          "tokens": 9639539.190985763,
-          "cost": 80,
-          "avgEntryMC": 7764.399908176428
-        }
-      }
+      "usd": 100,
+      "holdings": {}
     },
     "papaleta": {
       "usd": 0,
