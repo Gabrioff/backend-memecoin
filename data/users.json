@@ -24,8 +24,14 @@
     "holdings": {}
   },
   "Pepe": {
-    "usd": 100,
-    "holdings": {},
+    "usd": 85.08713107514573,
+    "holdings": {
+      "XDD-1764446901541": {
+        "tokens": 990099.00990099,
+        "cost": 5,
+        "avgEntryMC": 5010
+      }
+    },
     "pass": "Sc150610"
   }
 }
