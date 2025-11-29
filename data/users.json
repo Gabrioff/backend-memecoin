@@ -1,13 +1,7 @@
 {
   "Gabrioff": {
-    "usd": 0,
-    "holdings": {
-      "SKYVERSE-1764435070919": {
-        "tokens": 11032837.202682927,
-        "cost": 100,
-        "avgEntryMC": 8339.865162424761
-      }
-    }
+    "usd": 100,
+    "holdings": {}
   },
   "papaleta": {
     "usd": 0,
