@@ -2407,9 +2407,2013 @@
         }
       ],
       "price": 0.000007387823215218723,
-      "holders": {}
+      "holders": {},
+      "topTrades": [],
+      "rektTrades": []
     }
   },
   "transfers": [],
-  "chat": []
+  "chat": [],
+  "bots": [
+    {
+      "id": "Bot-1000",
+      "strategy": "HOLDER",
+      "balance": 13405.091765703253,
+      "risk": 0.27703866261555066,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1001",
+      "strategy": "HOLDER",
+      "balance": 10056.380125527388,
+      "risk": 0.5416134501797829,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1002",
+      "strategy": "SNIPER",
+      "balance": 11542.562307387921,
+      "risk": 0.5046867214520808,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1003",
+      "strategy": "SNIPER",
+      "balance": 10344.692082041025,
+      "risk": 0.08519551764872269,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1004",
+      "strategy": "DEGEN",
+      "balance": 11723.068294342469,
+      "risk": 0.44263118590440176,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1005",
+      "strategy": "HOLDER",
+      "balance": 12846.399862041751,
+      "risk": 0.5187135275830459,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1006",
+      "strategy": "SNIPER",
+      "balance": 14104.748667461812,
+      "risk": 0.2752886126730236,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1007",
+      "strategy": "HOLDER",
+      "balance": 13710.431837035308,
+      "risk": 0.6439370223255094,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1008",
+      "strategy": "SCALPER",
+      "balance": 10663.055624575449,
+      "risk": 0.016251935965714392,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1009",
+      "strategy": "SCALPER",
+      "balance": 12944.520538178158,
+      "risk": 0.7414280234449105,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1010",
+      "strategy": "SCALPER",
+      "balance": 13391.95674881239,
+      "risk": 0.6810221714376178,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1011",
+      "strategy": "SCALPER",
+      "balance": 10274.549425612435,
+      "risk": 0.5846131721411835,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1012",
+      "strategy": "DEGEN",
+      "balance": 12537.855853737483,
+      "risk": 0.8761172147940826,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1013",
+      "strategy": "DEGEN",
+      "balance": 10162.292922742932,
+      "risk": 0.5325691995988006,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1014",
+      "strategy": "DEGEN",
+      "balance": 11716.186688745513,
+      "risk": 0.05953931684949776,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1015",
+      "strategy": "SCALPER",
+      "balance": 14430.362476511886,
+      "risk": 0.8947119976744768,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1016",
+      "strategy": "HOLDER",
+      "balance": 13609.273569627388,
+      "risk": 0.7323790062586958,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1017",
+      "strategy": "DEGEN",
+      "balance": 14095.091719238102,
+      "risk": 0.40271175313362395,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1018",
+      "strategy": "SNIPER",
+      "balance": 14438.376678546298,
+      "risk": 0.6844232846145001,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1019",
+      "strategy": "SCALPER",
+      "balance": 12227.64298477398,
+      "risk": 0.9584722047532052,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1020",
+      "strategy": "DEGEN",
+      "balance": 11970.134509696749,
+      "risk": 0.31741519124869744,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1021",
+      "strategy": "SCALPER",
+      "balance": 10049.704550654293,
+      "risk": 0.2651683922245228,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1022",
+      "strategy": "SNIPER",
+      "balance": 13640.790582722642,
+      "risk": 0.289911036215731,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1023",
+      "strategy": "SCALPER",
+      "balance": 14913.764346944441,
+      "risk": 0.19236671086505186,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1024",
+      "strategy": "HOLDER",
+      "balance": 12817.818999247284,
+      "risk": 0.2776769077817781,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1025",
+      "strategy": "DEGEN",
+      "balance": 11731.691104412133,
+      "risk": 0.37535771216623737,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1026",
+      "strategy": "SNIPER",
+      "balance": 14975.342977412394,
+      "risk": 0.1864900806780665,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1027",
+      "strategy": "HOLDER",
+      "balance": 11258.17060887648,
+      "risk": 0.016567249918281846,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1028",
+      "strategy": "SCALPER",
+      "balance": 11915.84364324351,
+      "risk": 0.2622784395570066,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1029",
+      "strategy": "DEGEN",
+      "balance": 14129.926039294223,
+      "risk": 0.97927172797887,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1030",
+      "strategy": "SCALPER",
+      "balance": 11373.65981473324,
+      "risk": 0.20244413212727996,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1031",
+      "strategy": "DEGEN",
+      "balance": 11063.588593479506,
+      "risk": 0.47423455316696406,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1032",
+      "strategy": "DEGEN",
+      "balance": 10621.953469854501,
+      "risk": 0.07939048504638235,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1033",
+      "strategy": "SNIPER",
+      "balance": 14803.426280657188,
+      "risk": 0.5877593179744166,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1034",
+      "strategy": "DEGEN",
+      "balance": 12389.201114113372,
+      "risk": 0.5966966591809275,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1035",
+      "strategy": "SCALPER",
+      "balance": 14983.074951188348,
+      "risk": 0.09328579426013872,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1036",
+      "strategy": "HOLDER",
+      "balance": 10554.842586055815,
+      "risk": 0.8809740032325736,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1037",
+      "strategy": "DEGEN",
+      "balance": 13446.148580224322,
+      "risk": 0.6882074741988382,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1038",
+      "strategy": "SNIPER",
+      "balance": 13556.8826222899,
+      "risk": 0.7843612084353544,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1039",
+      "strategy": "HOLDER",
+      "balance": 13524.037006475846,
+      "risk": 0.42683060690309305,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1040",
+      "strategy": "SNIPER",
+      "balance": 14069.0424031537,
+      "risk": 0.8850190467603307,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1041",
+      "strategy": "SCALPER",
+      "balance": 12732.897575693636,
+      "risk": 0.8827960828673068,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1042",
+      "strategy": "SCALPER",
+      "balance": 14890.36919963104,
+      "risk": 0.6227279859901619,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1043",
+      "strategy": "SCALPER",
+      "balance": 10975.696270703673,
+      "risk": 0.9217582651375846,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1044",
+      "strategy": "DEGEN",
+      "balance": 10903.512414623405,
+      "risk": 0.3039946467933671,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1045",
+      "strategy": "SNIPER",
+      "balance": 13059.310439573597,
+      "risk": 0.5729716922441964,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1046",
+      "strategy": "SNIPER",
+      "balance": 12072.458382948591,
+      "risk": 0.7100061284612474,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1047",
+      "strategy": "SCALPER",
+      "balance": 14966.717017036615,
+      "risk": 0.4068537607367183,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1048",
+      "strategy": "HOLDER",
+      "balance": 10063.396097408959,
+      "risk": 0.6546710502562704,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1049",
+      "strategy": "SCALPER",
+      "balance": 14165.489967520754,
+      "risk": 0.3975045366118066,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1050",
+      "strategy": "SNIPER",
+      "balance": 12859.52154217198,
+      "risk": 0.5778142179995522,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1051",
+      "strategy": "SCALPER",
+      "balance": 14832.753817592962,
+      "risk": 0.974970593062643,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1052",
+      "strategy": "SCALPER",
+      "balance": 12769.55812795823,
+      "risk": 0.8168958829822479,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1053",
+      "strategy": "SCALPER",
+      "balance": 11230.152790337746,
+      "risk": 0.9622713100047113,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1054",
+      "strategy": "DEGEN",
+      "balance": 10900.6835932074,
+      "risk": 0.9513007795624978,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1055",
+      "strategy": "DEGEN",
+      "balance": 11101.302733689368,
+      "risk": 0.6350246907452878,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1056",
+      "strategy": "SCALPER",
+      "balance": 12289.399456396373,
+      "risk": 0.7499651863036654,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1057",
+      "strategy": "SCALPER",
+      "balance": 12619.80596959507,
+      "risk": 0.4014992458207993,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1058",
+      "strategy": "SNIPER",
+      "balance": 10996.318862716585,
+      "risk": 0.23460542779393356,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1059",
+      "strategy": "SNIPER",
+      "balance": 14864.789882003553,
+      "risk": 0.1717453037745562,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1060",
+      "strategy": "SCALPER",
+      "balance": 10218.745488910643,
+      "risk": 0.03335084551538803,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1061",
+      "strategy": "SCALPER",
+      "balance": 13755.574098163506,
+      "risk": 0.3637830751389023,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1062",
+      "strategy": "SCALPER",
+      "balance": 13680.494903885206,
+      "risk": 0.812534005216751,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1063",
+      "strategy": "SCALPER",
+      "balance": 12897.13767946792,
+      "risk": 0.949918071578449,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1064",
+      "strategy": "SNIPER",
+      "balance": 11839.71158126104,
+      "risk": 0.004023622570448193,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1065",
+      "strategy": "HOLDER",
+      "balance": 14738.173315736723,
+      "risk": 0.3074227538154847,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1066",
+      "strategy": "HOLDER",
+      "balance": 12481.646788917707,
+      "risk": 0.45854739102066633,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1067",
+      "strategy": "SCALPER",
+      "balance": 14109.858032087075,
+      "risk": 0.8633944091901662,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1068",
+      "strategy": "SCALPER",
+      "balance": 13681.521035460903,
+      "risk": 0.6379720135490059,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1069",
+      "strategy": "DEGEN",
+      "balance": 12916.706624971781,
+      "risk": 0.9512070289068949,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1070",
+      "strategy": "SNIPER",
+      "balance": 11278.484697066948,
+      "risk": 0.6561912522989958,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1071",
+      "strategy": "DEGEN",
+      "balance": 13728.215510178596,
+      "risk": 0.6875907961007716,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1072",
+      "strategy": "HOLDER",
+      "balance": 10286.342447599176,
+      "risk": 0.4951392589405492,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1073",
+      "strategy": "HOLDER",
+      "balance": 13368.579591053083,
+      "risk": 0.07972965734574622,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1074",
+      "strategy": "SCALPER",
+      "balance": 11878.879316700646,
+      "risk": 0.08225624668132203,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1075",
+      "strategy": "HOLDER",
+      "balance": 11853.588851738945,
+      "risk": 0.09455752413893492,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1076",
+      "strategy": "SCALPER",
+      "balance": 14013.641957224743,
+      "risk": 0.5969474681421093,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1077",
+      "strategy": "HOLDER",
+      "balance": 12391.757138184144,
+      "risk": 0.3839836596849133,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1078",
+      "strategy": "HOLDER",
+      "balance": 11950.37142956445,
+      "risk": 0.7217707168490893,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1079",
+      "strategy": "DEGEN",
+      "balance": 11403.067870680927,
+      "risk": 0.7823519954998995,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1080",
+      "strategy": "HOLDER",
+      "balance": 10701.811679008813,
+      "risk": 0.1746864878185077,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1081",
+      "strategy": "DEGEN",
+      "balance": 11034.754336691652,
+      "risk": 0.8861719956186054,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1082",
+      "strategy": "SNIPER",
+      "balance": 10638.238802985568,
+      "risk": 0.5174515695506782,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1083",
+      "strategy": "SCALPER",
+      "balance": 12961.398982270843,
+      "risk": 0.2642708785095358,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1084",
+      "strategy": "SCALPER",
+      "balance": 13183.94767283444,
+      "risk": 0.027734940896584792,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1085",
+      "strategy": "HOLDER",
+      "balance": 14296.066169078704,
+      "risk": 0.9876557855862445,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1086",
+      "strategy": "HOLDER",
+      "balance": 11575.232065016331,
+      "risk": 0.09180941764245976,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1087",
+      "strategy": "HOLDER",
+      "balance": 10824.32352638736,
+      "risk": 0.7488982428335471,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1088",
+      "strategy": "DEGEN",
+      "balance": 10630.325198431343,
+      "risk": 0.5850899336810209,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1089",
+      "strategy": "HOLDER",
+      "balance": 12091.21972997509,
+      "risk": 0.8376979536213625,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1090",
+      "strategy": "HOLDER",
+      "balance": 11992.080114356668,
+      "risk": 0.3732816426995853,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1091",
+      "strategy": "SNIPER",
+      "balance": 10333.97771754687,
+      "risk": 0.5027670256240911,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1092",
+      "strategy": "SNIPER",
+      "balance": 11636.53437054008,
+      "risk": 0.9085871540782351,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1093",
+      "strategy": "SCALPER",
+      "balance": 11971.374482101019,
+      "risk": 0.3107295240980371,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1094",
+      "strategy": "HOLDER",
+      "balance": 10685.825353843016,
+      "risk": 0.9647745769432237,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1095",
+      "strategy": "HOLDER",
+      "balance": 14494.132619294676,
+      "risk": 0.3332991589711015,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1096",
+      "strategy": "SCALPER",
+      "balance": 13755.54839685594,
+      "risk": 0.27795037265105194,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1097",
+      "strategy": "SCALPER",
+      "balance": 14445.258227091941,
+      "risk": 0.7360024776103843,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1098",
+      "strategy": "SCALPER",
+      "balance": 11795.826543934558,
+      "risk": 0.05982688475057796,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1099",
+      "strategy": "DEGEN",
+      "balance": 14797.858152097146,
+      "risk": 0.6736661057454805,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1100",
+      "strategy": "SCALPER",
+      "balance": 13524.615822142292,
+      "risk": 0.5795157107542547,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1101",
+      "strategy": "SNIPER",
+      "balance": 13756.308860087282,
+      "risk": 0.1753921781126726,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1102",
+      "strategy": "HOLDER",
+      "balance": 13657.503114283649,
+      "risk": 0.8805812856246845,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1103",
+      "strategy": "SCALPER",
+      "balance": 11015.53068728048,
+      "risk": 0.10902944136279058,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1104",
+      "strategy": "SNIPER",
+      "balance": 11314.630220313516,
+      "risk": 0.8832929719719819,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1105",
+      "strategy": "SNIPER",
+      "balance": 14611.125455051832,
+      "risk": 0.8570035694933209,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1106",
+      "strategy": "SCALPER",
+      "balance": 11506.678850592327,
+      "risk": 0.3758387249330235,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1107",
+      "strategy": "SNIPER",
+      "balance": 11613.185400524835,
+      "risk": 0.5476620280077781,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1108",
+      "strategy": "SCALPER",
+      "balance": 10483.102539421932,
+      "risk": 0.7806708642012081,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1109",
+      "strategy": "DEGEN",
+      "balance": 10533.28423749739,
+      "risk": 0.8297964820015037,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1110",
+      "strategy": "HOLDER",
+      "balance": 12287.592772881617,
+      "risk": 0.9215655257532542,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1111",
+      "strategy": "HOLDER",
+      "balance": 11067.317489870786,
+      "risk": 0.30036976763034784,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1112",
+      "strategy": "SNIPER",
+      "balance": 13646.944189911042,
+      "risk": 0.8862338832640351,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1113",
+      "strategy": "HOLDER",
+      "balance": 12267.940634829558,
+      "risk": 0.37616592609639643,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1114",
+      "strategy": "SNIPER",
+      "balance": 13759.34678301568,
+      "risk": 0.020465512668689012,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1115",
+      "strategy": "SCALPER",
+      "balance": 11245.818865453944,
+      "risk": 0.5816942051571917,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1116",
+      "strategy": "DEGEN",
+      "balance": 10415.869999267989,
+      "risk": 0.04506642184973575,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1117",
+      "strategy": "HOLDER",
+      "balance": 12549.663669234074,
+      "risk": 0.4303174811145877,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1118",
+      "strategy": "HOLDER",
+      "balance": 11033.362894140864,
+      "risk": 0.6523015458703607,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1119",
+      "strategy": "SNIPER",
+      "balance": 10976.119841224194,
+      "risk": 0.9162185322218089,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1120",
+      "strategy": "DEGEN",
+      "balance": 11509.261264420973,
+      "risk": 0.6173365477782058,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1121",
+      "strategy": "DEGEN",
+      "balance": 10264.868837744076,
+      "risk": 0.29446136904493647,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1122",
+      "strategy": "DEGEN",
+      "balance": 12348.448440097623,
+      "risk": 0.9673944787957339,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1123",
+      "strategy": "HOLDER",
+      "balance": 12834.432148017766,
+      "risk": 0.27897080457020507,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1124",
+      "strategy": "DEGEN",
+      "balance": 14093.86111735187,
+      "risk": 0.6298122252471933,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1125",
+      "strategy": "SCALPER",
+      "balance": 10948.890182208444,
+      "risk": 0.8033653360623673,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1126",
+      "strategy": "DEGEN",
+      "balance": 13052.895568075717,
+      "risk": 0.8205027328395368,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1127",
+      "strategy": "DEGEN",
+      "balance": 13836.866447458317,
+      "risk": 0.11822789689214364,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1128",
+      "strategy": "SCALPER",
+      "balance": 12966.761341049578,
+      "risk": 0.421623932499538,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1129",
+      "strategy": "SCALPER",
+      "balance": 11146.651784391837,
+      "risk": 0.07072425568136287,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1130",
+      "strategy": "SCALPER",
+      "balance": 13276.496321588296,
+      "risk": 0.8706537980226984,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1131",
+      "strategy": "DEGEN",
+      "balance": 13943.340618850096,
+      "risk": 0.8752447988620073,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1132",
+      "strategy": "SCALPER",
+      "balance": 14218.971142019995,
+      "risk": 0.5322065855882212,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1133",
+      "strategy": "HOLDER",
+      "balance": 14456.945798396979,
+      "risk": 0.6012051318474376,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1134",
+      "strategy": "SCALPER",
+      "balance": 14311.235723226957,
+      "risk": 0.755879530568146,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1135",
+      "strategy": "DEGEN",
+      "balance": 14140.366062611294,
+      "risk": 0.4973314022304377,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1136",
+      "strategy": "SNIPER",
+      "balance": 10861.122963484313,
+      "risk": 0.4728511119108644,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1137",
+      "strategy": "SNIPER",
+      "balance": 14898.88566478584,
+      "risk": 0.6955402496820525,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1138",
+      "strategy": "SCALPER",
+      "balance": 13621.826174058542,
+      "risk": 0.6184480398303659,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1139",
+      "strategy": "DEGEN",
+      "balance": 10411.504037408167,
+      "risk": 0.6115439182982045,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1140",
+      "strategy": "SNIPER",
+      "balance": 12975.322491091776,
+      "risk": 0.5994693984195532,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1141",
+      "strategy": "SCALPER",
+      "balance": 13547.187566137653,
+      "risk": 0.4148500867491707,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1142",
+      "strategy": "HOLDER",
+      "balance": 11610.040315549611,
+      "risk": 0.13932718503211206,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1143",
+      "strategy": "DEGEN",
+      "balance": 14411.067646132376,
+      "risk": 0.3265125789660076,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1144",
+      "strategy": "SNIPER",
+      "balance": 13235.813473510669,
+      "risk": 0.11996154735254261,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1145",
+      "strategy": "SCALPER",
+      "balance": 10566.387891286791,
+      "risk": 0.9633712595469951,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1146",
+      "strategy": "SNIPER",
+      "balance": 13164.680416728537,
+      "risk": 0.45054414355994443,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1147",
+      "strategy": "SCALPER",
+      "balance": 13825.836019792006,
+      "risk": 0.9852503785283776,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1148",
+      "strategy": "SCALPER",
+      "balance": 10196.85375816786,
+      "risk": 0.08749248415460475,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1149",
+      "strategy": "SNIPER",
+      "balance": 14073.439827353697,
+      "risk": 0.3230248775751243,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1150",
+      "strategy": "SCALPER",
+      "balance": 13845.59188866631,
+      "risk": 0.4145465694032837,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1151",
+      "strategy": "HOLDER",
+      "balance": 11858.666229887776,
+      "risk": 0.5968429492542006,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1152",
+      "strategy": "SNIPER",
+      "balance": 10164.163304790072,
+      "risk": 0.6621001228678217,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1153",
+      "strategy": "SNIPER",
+      "balance": 10245.959378433614,
+      "risk": 0.396583028311552,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1154",
+      "strategy": "SCALPER",
+      "balance": 14550.385211108074,
+      "risk": 0.4243389999903219,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1155",
+      "strategy": "SNIPER",
+      "balance": 12270.328981016979,
+      "risk": 0.7518651879759936,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1156",
+      "strategy": "HOLDER",
+      "balance": 11428.582661431465,
+      "risk": 0.3099787766931442,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1157",
+      "strategy": "HOLDER",
+      "balance": 12872.749972788992,
+      "risk": 0.30089875128838817,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1158",
+      "strategy": "HOLDER",
+      "balance": 10662.678480496153,
+      "risk": 0.5210329034668065,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1159",
+      "strategy": "HOLDER",
+      "balance": 11865.701394100412,
+      "risk": 0.08306361318055533,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1160",
+      "strategy": "HOLDER",
+      "balance": 10341.495542421031,
+      "risk": 0.8952441824542093,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1161",
+      "strategy": "SCALPER",
+      "balance": 12731.541680647446,
+      "risk": 0.8189257746875733,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1162",
+      "strategy": "SCALPER",
+      "balance": 11308.730028957938,
+      "risk": 0.4401165257801194,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1163",
+      "strategy": "HOLDER",
+      "balance": 14432.651259226273,
+      "risk": 0.18321640651256876,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1164",
+      "strategy": "HOLDER",
+      "balance": 12127.936594921153,
+      "risk": 0.8557154860606732,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1165",
+      "strategy": "HOLDER",
+      "balance": 13909.887230829327,
+      "risk": 0.1378324902146264,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1166",
+      "strategy": "SNIPER",
+      "balance": 12250.454770560907,
+      "risk": 0.34160350270774853,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1167",
+      "strategy": "SCALPER",
+      "balance": 14445.186563051582,
+      "risk": 0.94472004746927,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1168",
+      "strategy": "SNIPER",
+      "balance": 11069.254926183536,
+      "risk": 0.9933191661055755,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1169",
+      "strategy": "SNIPER",
+      "balance": 10263.711257327157,
+      "risk": 0.07488942144307409,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1170",
+      "strategy": "SCALPER",
+      "balance": 10511.947911018284,
+      "risk": 0.12332966564652648,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1171",
+      "strategy": "DEGEN",
+      "balance": 11469.565016738252,
+      "risk": 0.5395218641845052,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1172",
+      "strategy": "SNIPER",
+      "balance": 10454.48263639184,
+      "risk": 0.287845919992054,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1173",
+      "strategy": "SCALPER",
+      "balance": 11683.98215745626,
+      "risk": 0.09600596710264309,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1174",
+      "strategy": "SCALPER",
+      "balance": 13399.683639642473,
+      "risk": 0.7481176908796382,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1175",
+      "strategy": "SCALPER",
+      "balance": 10301.841838025031,
+      "risk": 0.8519824705267516,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1176",
+      "strategy": "SCALPER",
+      "balance": 12055.977930814352,
+      "risk": 0.7206668812075101,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1177",
+      "strategy": "SCALPER",
+      "balance": 11025.36529963487,
+      "risk": 0.7686840288279776,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1178",
+      "strategy": "HOLDER",
+      "balance": 12058.116766144876,
+      "risk": 0.5382666258124947,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1179",
+      "strategy": "HOLDER",
+      "balance": 11496.00668292477,
+      "risk": 0.6782544393481899,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1180",
+      "strategy": "HOLDER",
+      "balance": 12813.307234077223,
+      "risk": 0.4952790155329898,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1181",
+      "strategy": "HOLDER",
+      "balance": 10401.11547464733,
+      "risk": 0.490457547729634,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1182",
+      "strategy": "HOLDER",
+      "balance": 14616.237278984867,
+      "risk": 0.04124671657425816,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1183",
+      "strategy": "HOLDER",
+      "balance": 10941.682625224417,
+      "risk": 0.8303097010847734,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1184",
+      "strategy": "SNIPER",
+      "balance": 12495.153243552171,
+      "risk": 0.09751113576539694,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1185",
+      "strategy": "SNIPER",
+      "balance": 12917.991528154755,
+      "risk": 0.10921566622795664,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1186",
+      "strategy": "HOLDER",
+      "balance": 14240.183009944083,
+      "risk": 0.7232020187566872,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1187",
+      "strategy": "DEGEN",
+      "balance": 13250.841314636158,
+      "risk": 0.8027627196709465,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1188",
+      "strategy": "SCALPER",
+      "balance": 10474.03333340483,
+      "risk": 0.28378813867462616,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1189",
+      "strategy": "HOLDER",
+      "balance": 12713.840418195037,
+      "risk": 0.8076824201981843,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1190",
+      "strategy": "SNIPER",
+      "balance": 10312.196752052761,
+      "risk": 0.37268753830678314,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1191",
+      "strategy": "SNIPER",
+      "balance": 13688.866571502072,
+      "risk": 0.5635359209553816,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1192",
+      "strategy": "DEGEN",
+      "balance": 14014.170382802813,
+      "risk": 0.2285280579069443,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1193",
+      "strategy": "SNIPER",
+      "balance": 10083.168664273491,
+      "risk": 0.8699885874390959,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1194",
+      "strategy": "SNIPER",
+      "balance": 14496.31988917294,
+      "risk": 0.0041251332064234925,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1195",
+      "strategy": "SCALPER",
+      "balance": 11125.67369129883,
+      "risk": 0.80937109852448,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1196",
+      "strategy": "DEGEN",
+      "balance": 11545.93359761651,
+      "risk": 0.5812021995116056,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1197",
+      "strategy": "SNIPER",
+      "balance": 12800.047902839136,
+      "risk": 0.8993744449888149,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1198",
+      "strategy": "DEGEN",
+      "balance": 13324.956815915211,
+      "risk": 0.5494192488928544,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    },
+    {
+      "id": "Bot-1199",
+      "strategy": "HOLDER",
+      "balance": 12105.731795780655,
+      "risk": 0.4875913000575921,
+      "wins": 0,
+      "losses": 0,
+      "totalPnl": 0,
+      "holdings": {}
+    }
+  ]
 }
