@@ -1,1 +1,77 @@
-{}
+{
+  "Gabrioff": {
+    "usd": 100,
+    "holdings": {}
+  },
+  "papaleta": {
+    "usd": 0,
+    "holdings": {
+      "EL HIPOPOTAMO-1764437541663": {
+        "tokens": 13246839.115346014,
+        "cost": 100,
+        "avgEntryMC": 6962.700612388037
+      }
+    },
+    "pass": "Sc150610"
+  },
+  "XD": {
+    "usd": 100,
+    "holdings": {},
+    "pass": "Sc150610"
+  },
+  "SirValenn": {
+    "usd": 100,
+    "holdings": {}
+  },
+  "Pepe": {
+    "usd": 2.2053685825762143e+109,
+    "holdings": {
+      "XDD-1764446901541": {
+        "tokens": 0,
+        "cost": 0,
+        "avgEntryMC": 6327.983523540522
+      },
+      "BTC-1764448114914": {
+        "tokens": 0,
+        "cost": 0,
+        "avgEntryMC": 5050
+      },
+      "CLASH ROYAL-1764448919199": {
+        "tokens": 0,
+        "cost": 0,
+        "avgEntryMC": 21347.840512502225
+      },
+      "FLOW-1764450019087": {
+        "tokens": 67865138.12092684,
+        "cost": 10001000000000000000,
+        "avgEntryMC": 91874633687508520000
+      }
+    },
+    "pass": "Sc150610"
+  },
+  "LAPUTAMADRE": {
+    "usd": 100,
+    "holdings": {}
+  },
+  "ADMIN": {
+    "usd": 17890836690405495000,
+    "holdings": {
+      "FLOW-1764450019087": {
+        "tokens": 0,
+        "cost": 0,
+        "avgEntryMC": 643.8553488470577
+      }
+    },
+    "pass": "12345678"
+  },
+  "Daniel": {
+    "usd": 100,
+    "holdings": {},
+    "pass": "12345678"
+  },
+  "XDD": {
+    "usd": 100,
+    "holdings": {},
+    "pass": "12345678"
+  }
+}
