@@ -24,9 +24,9 @@
     "strategy": "DEGEN",
     "balance": 14346.903584917247,
     "risk": 0.20246330998235573,
-    "wins": 6,
+    "wins": 9,
     "losses": 0,
-    "totalPnl": 185.82364485168208,
+    "totalPnl": 266.55706261735116,
     "holdings": {}
   },
   {
@@ -214,9 +214,9 @@
     "strategy": "DEGEN",
     "balance": 12603.230524971897,
     "risk": 0.071608253122177,
-    "wins": 6,
+    "wins": 9,
     "losses": 1,
-    "totalPnl": 287.2339752048061,
+    "totalPnl": 368.0346519065931,
     "holdings": {}
   },
   {
@@ -994,9 +994,9 @@
     "strategy": "HOLDER",
     "balance": 12425.603083289925,
     "risk": 0.1133992900340034,
-    "wins": 1,
+    "wins": 3,
     "losses": 0,
-    "totalPnl": 50.48189706066594,
+    "totalPnl": 333.82969247076977,
     "holdings": {}
   },
   {
@@ -1024,9 +1024,9 @@
     "strategy": "HOLDER",
     "balance": 11462.649363813733,
     "risk": 0.4316873996032107,
-    "wins": 2,
+    "wins": 4,
     "losses": 0,
-    "totalPnl": 228.23276063799528,
+    "totalPnl": 662.1942749614238,
     "holdings": {}
   },
   {
@@ -1544,9 +1544,9 @@
     "strategy": "SCALPER",
     "balance": 10912.20285005049,
     "risk": 0.17587590706819323,
-    "wins": 21,
+    "wins": 25,
     "losses": 0,
-    "totalPnl": 27.970106944844332,
+    "totalPnl": 30.977973730454735,
     "holdings": {}
   },
   {
