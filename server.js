@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { Octokit } = require('octokit');
+const fetch = require('node-fetch'); // <--- EL SALVAVIDAS (Cable manual a internet)
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,13 +17,11 @@ if (!GITHUB_TOKEN) {
     process.exit(1); 
 }
 
-// --- SOLUCIÓN AL ERROR 'FETCH IS NOT SET' ---
-// 1. Aseguramos que 'fetch' exista (Node 18+ lo tiene global)
-// 2. Se lo pasamos explícitamente a Octokit
+// Inicializar Octokit pasando fetch explícitamente
 const octokit = new Octokit({ 
     auth: GITHUB_TOKEN,
     request: {
-        fetch: fetch // <--- ESTA LÍNEA ARREGLA TU ERROR
+        fetch: fetch // <--- Aquí forzamos el uso de node-fetch
     },
     log: { debug: () => {}, info: () => {}, warn: console.warn, error: console.error }
 });
@@ -40,9 +39,9 @@ const collections = {
 
 let isSaving = false;
 
-// --- 1. CARGA SEGURA ---
+// --- 1. CARGA INTELIGENTE (Con Autoreparación) ---
 async function initStorage() {
-    console.log(`🔌 [CONECTANDO] Repo: ${GITHUB_OWNER}/${GITHUB_REPO} (Node ${process.version})`);
+    console.log(`🔌 [CONECTANDO] Repo: ${GITHUB_OWNER}/${GITHUB_REPO}`);
     
     const promises = Object.keys(collections).map(async (key) => {
         const col = collections[key];
@@ -52,8 +51,21 @@ async function initStorage() {
                 headers: { 'X-GitHub-Api-Version': '2022-11-28' }
             });
             col.sha = data.sha;
-            col.data = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
-            console.log(`   ✅ CARGADO: ${key}`);
+            
+            // INTENTO DE LECTURA PROTEGIDO
+            try {
+                const rawContent = Buffer.from(data.content, 'base64').toString('utf-8');
+                if (!rawContent || rawContent.trim() === "") throw new Error("Archivo vacío");
+                col.data = JSON.parse(rawContent);
+                console.log(`   ✅ CARGADO: ${key}`);
+            } catch (parseError) {
+                // AQUÍ OCURRE LA MAGIA DE LA REPARACIÓN
+                console.warn(`   ⚠️ CORRUPCIÓN DETECTADA en ${key}: ${parseError.message}`);
+                console.log(`   🔧 REPARANDO ${key}... (Reiniciando archivo)`);
+                col.data = (key === 'bots' || key === 'transfers') ? [] : {};
+                col.dirty = true; // Marcar para sobrescribir el archivo corrupto en GitHub
+            }
+
         } catch (error) {
             const status = error.status || (error.response ? error.response.status : null);
             if (status === 404) {
@@ -61,7 +73,7 @@ async function initStorage() {
                 col.dirty = true;
                 col.data = (key === 'bots' || key === 'transfers') ? [] : {};
             } else {
-                console.error(`   ⚠️ ERROR ${key}: ${status} - ${error.message}`);
+                console.error(`   ⚠️ ERROR DE CONEXIÓN ${key}: ${status} - ${error.message}`);
             }
         }
     });
@@ -106,7 +118,7 @@ async function saveLoop() {
 }
 
 // --- API ---
-app.get('/', (req, res) => res.send(`Railway Backend Online (Node ${process.version})`));
+app.get('/', (req, res) => res.send(`Railway Backend Online (Auto-Repair Active)`));
 
 app.get('/api/load', (req, res) => {
     res.json({ 
@@ -147,7 +159,7 @@ app.post('/api/stream', (req, res) => {
                 ext.marketCap = inc.marketCap;
                 ext.price = inc.price;
                 ext.liquidityDepth = inc.liquidityDepth;
-                ext.conviction = inc.conviction; // Asegurar convicción
+                ext.conviction = inc.conviction; 
                 if(inc.holders) ext.holders = inc.holders;
                 if(inc.chartData) ext.chartData = inc.chartData;
                 if(inc.topTrades) ext.topTrades = inc.topTrades;
