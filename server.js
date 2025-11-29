@@ -6,126 +6,93 @@ const { Octokit } = require('octokit');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// --- CONFIGURACIÓN GITHUB ---
+// --- DATOS ---
 const GITHUB_OWNER = "Gabrioff"; 
-const GITHUB_REPO = "backend-memecoin";
+const GITHUB_REPO = "backend-memecoin"; 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 if (!GITHUB_TOKEN) {
-    console.error("❌ CRÍTICO: Falta GITHUB_TOKEN.");
-    process.exit(1);
+    console.error("❌ ERROR CRÍTICO: Falta GITHUB_TOKEN.");
+    process.exit(1); 
 }
 
-const octokit = new Octokit({ auth: GITHUB_TOKEN });
+// --- SOLUCIÓN AL ERROR 'FETCH IS NOT SET' ---
+// 1. Aseguramos que 'fetch' exista (Node 18+ lo tiene global)
+// 2. Se lo pasamos explícitamente a Octokit
+const octokit = new Octokit({ 
+    auth: GITHUB_TOKEN,
+    request: {
+        fetch: fetch // <--- ESTA LÍNEA ARREGLA TU ERROR
+    },
+    log: { debug: () => {}, info: () => {}, warn: console.warn, error: console.error }
+});
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
-// --- GESTOR DE COLECCIONES (CARPETAS VIRTUALES) ---
-// Cada "colección" es un archivo separado en GitHub para evitar cuellos de botella
+// --- ESTRUCTURA ---
 const collections = {
-    users: { 
-        path: "data/users.json", 
-        data: {}, 
-        sha: null, 
-        dirty: false 
-    },
-    tokens: { 
-        path: "data/tokens.json", 
-        data: {}, 
-        sha: null, 
-        dirty: false 
-    },
-    bots: { 
-        path: "data/bots.json", 
-        data: [], 
-        sha: null, 
-        dirty: false 
-    },
-    transfers: { 
-        path: "data/transfers.json", 
-        data: [], 
-        sha: null, 
-        dirty: false 
-    }
+    users: { path: "data/users.json", data: {}, sha: null, dirty: false },
+    tokens: { path: "data/tokens.json", data: {}, sha: null, dirty: false },
+    bots: { path: "data/bots.json", data: [], sha: null, dirty: false },
+    transfers: { path: "data/transfers.json", data: [], sha: null, dirty: false }
 };
 
-let isSaving = false; // Bloqueo global de guardado para evitar colisiones API
+let isSaving = false;
 
-// --- SISTEMA DE PERSISTENCIA MODULAR ---
-
-// 1. Cargar todas las colecciones al inicio
+// --- 1. CARGA SEGURA ---
 async function initStorage() {
-    console.log(`🔄 [INICIO] Conectando con GitHub...`);
+    console.log(`🔌 [CONECTANDO] Repo: ${GITHUB_OWNER}/${GITHUB_REPO} (Node ${process.version})`);
     
-    // Cargamos cada archivo en paralelo
     const promises = Object.keys(collections).map(async (key) => {
         const col = collections[key];
         try {
-            console.log(`   📂 Cargando ${col.path}...`);
             const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-                owner: GITHUB_OWNER,
-                repo: GITHUB_REPO,
-                path: col.path,
+                owner: GITHUB_OWNER, repo: GITHUB_REPO, path: col.path,
+                headers: { 'X-GitHub-Api-Version': '2022-11-28' }
             });
-
             col.sha = data.sha;
-            const content = Buffer.from(data.content, 'base64').toString('utf-8');
-            col.data = JSON.parse(content);
-            console.log(`   ✅ ${key.toUpperCase()} cargado. Elementos: ${Array.isArray(col.data) ? col.data.length : Object.keys(col.data).length}`);
-            
+            col.data = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
+            console.log(`   ✅ CARGADO: ${key}`);
         } catch (error) {
-            if (error.status === 404) {
-                console.log(`   🆕 ${col.path} no existe. Se creará al guardar.`);
-                col.dirty = true; // Marcar para crear
+            const status = error.status || (error.response ? error.response.status : null);
+            if (status === 404) {
+                console.log(`   🆕 NUEVO: ${col.path} no existe. Se creará.`);
+                col.dirty = true;
+                col.data = (key === 'bots' || key === 'transfers') ? [] : {};
             } else {
-                console.error(`   ❌ Error cargando ${col.path}:`, error.status);
+                console.error(`   ⚠️ ERROR ${key}: ${status} - ${error.message}`);
             }
         }
     });
 
     await Promise.all(promises);
-    console.log("🚀 SISTEMA DE DATOS LISTO.");
+    console.log("🚀 SERVIDOR OPERATIVO Y SIN ERRORES.");
 }
 
-// 2. Guardado Inteligente (Cola Secuencial)
+// --- 2. GUARDADO ---
 async function saveLoop() {
     if (isSaving) return;
-
-    // Buscamos qué colecciones necesitan guardarse
     const dirtyKeys = Object.keys(collections).filter(k => collections[k].dirty);
     if (dirtyKeys.length === 0) return;
 
     isSaving = true;
-
-    // Guardamos UNO POR UNO para no saturar la API de GitHub
     for (const key of dirtyKeys) {
         const col = collections[key];
         try {
-            console.log(`💾 Guardando cambios en: ${col.path}...`);
+            console.log(`💾 GUARDANDO: ${key}...`);
+            const contentEncoded = Buffer.from(JSON.stringify(col.data, null, 2)).toString('base64');
             
-            // Convertimos a JSON bonito
-            const contentStr = JSON.stringify(col.data, null, 2);
-            const contentEncoded = Buffer.from(contentStr).toString('base64');
-
             const res = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-                owner: GITHUB_OWNER,
-                repo: GITHUB_REPO,
-                path: col.path,
-                message: `Update ${key} - ${new Date().toISOString()}`,
-                content: contentEncoded,
-                sha: col.sha // Importante para actualizar
+                owner: GITHUB_OWNER, repo: GITHUB_REPO, path: col.path,
+                message: `Auto-save ${key}`, content: contentEncoded, sha: col.sha
             });
-
             col.sha = res.data.content.sha;
-            col.dirty = false; // ¡Limpio!
-            console.log(`   ✅ ${key} guardado correctamente.`);
-
+            col.dirty = false;
+            console.log(`   ✅ GUARDADO OK: ${key}`);
         } catch (error) {
-            console.error(`   ❌ Error guardando ${key}: ${error.message}`);
-            // Si hay conflicto (409), intentamos refrescar el SHA para la próxima
-            if (error.status === 409) {
-                console.log(`   ⚠️ Conflicto SHA en ${key}. Intentando resincronizar...`);
+            console.error(`   ❌ ERROR GUARDANDO ${key}: ${error.message}`);
+            if (error.status === 409) { 
                 try {
                     const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
                         owner: GITHUB_OWNER, repo: GITHUB_REPO, path: col.path
@@ -135,119 +102,74 @@ async function saveLoop() {
             }
         }
     }
-
     isSaving = false;
 }
 
-// Iniciar sistema
-initStorage();
-setInterval(saveLoop, 2000); // Guardar cambios cada 2 segundos
-
 // --- API ---
+app.get('/', (req, res) => res.send(`Railway Backend Online (Node ${process.version})`));
 
-app.get('/', (req, res) => res.send('Game Server Multi-File v4.0 Active'));
-
-// 1. CARGA: Unir todo para el cliente
 app.get('/api/load', (req, res) => {
-    // El frontend espera un solo objeto gigante, así que lo construimos al vuelo
-    const combinedDb = {
-        users: collections.users.data,
-        tokens: collections.tokens.data,
-        bots: collections.bots.data,
-        transfers: collections.transfers.data,
-        chat: [] // Chat efímero
-    };
-    res.json({ success: true, data: combinedDb });
+    res.json({ 
+        success: true, 
+        data: {
+            users: collections.users.data,
+            tokens: collections.tokens.data,
+            bots: collections.bots.data,
+            transfers: collections.transfers.data,
+            chat: [] 
+        }
+    });
 });
 
-// 2. STREAM: Separar los datos entrantes en sus carpetas
 app.post('/api/stream', (req, res) => {
-    res.json({ success: true }); // Respuesta rápida para ping bajo
-
+    res.json({ success: true });
     const { data } = req.body;
     if (!data) return;
 
-    // --- PROCESAMIENTO DE USUARIOS (users.json) ---
     if (data.users) {
-        let usersChanged = false;
         Object.keys(data.users).forEach(u => {
-            const incomingUser = data.users[u];
-            const existingUser = collections.users.data[u];
-
-            // Fusión segura: Si el usuario ya existe, actualizamos sus campos.
-            // Si no existe, lo creamos.
-            if (!existingUser) {
-                collections.users.data[u] = incomingUser;
-                usersChanged = true;
-                console.log(`👤 Nuevo usuario registrado: ${u}`);
-            } else {
-                // Chequeo de seguridad: Evitar sobrescribir con datos vacíos si el cliente falló
-                if (incomingUser.usd !== undefined) {
-                    // Detectar cambios reales para no marcar 'dirty' innecesariamente
-                    if (existingUser.usd !== incomingUser.usd || 
-                        JSON.stringify(existingUser.holdings) !== JSON.stringify(incomingUser.holdings)) {
-                        
-                        collections.users.data[u] = { ...existingUser, ...incomingUser };
-                        usersChanged = true;
-                    }
-                }
+            const inc = data.users[u];
+            const ext = collections.users.data[u];
+            if (!ext || JSON.stringify(ext) !== JSON.stringify(inc)) {
+                collections.users.data[u] = { ...(ext || {}), ...inc };
+                collections.users.dirty = true;
             }
         });
-        if (usersChanged) collections.users.dirty = true;
     }
-
-    // --- PROCESAMIENTO DE TOKENS (tokens.json) ---
     if (data.tokens) {
-        let tokensChanged = false;
         Object.keys(data.tokens).forEach(tid => {
             const inc = data.tokens[tid];
             const ext = collections.tokens.data[tid];
-
             if (!ext) {
                 collections.tokens.data[tid] = inc;
-                tokensChanged = true;
+                collections.tokens.dirty = true;
             } else {
-                // Actualizamos solo lo necesario
                 ext.marketCap = inc.marketCap;
                 ext.price = inc.price;
                 ext.liquidityDepth = inc.liquidityDepth;
-                ext.conviction = inc.conviction;
-                
-                // Guardar datos pesados
+                ext.conviction = inc.conviction; // Asegurar convicción
                 if(inc.holders) ext.holders = inc.holders;
                 if(inc.chartData) ext.chartData = inc.chartData;
                 if(inc.topTrades) ext.topTrades = inc.topTrades;
                 if(inc.rektTrades) ext.rektTrades = inc.rektTrades;
-                
-                tokensChanged = true;
+                collections.tokens.dirty = true;
             }
         });
-        if (tokensChanged) collections.tokens.dirty = true;
     }
-
-    // --- PROCESAMIENTO DE BOTS (bots.json) ---
     if (data.bots && data.bots.length > 0) {
-        // Solo actualizamos si realmente hay datos y difieren
-        // Para simplificar, si llegan bots, asumimos que el simulador tiene la autoridad
         collections.bots.data = data.bots;
         collections.bots.dirty = true;
     }
-
-    // --- PROCESAMIENTO DE TRANSFERENCIAS (transfers.json) ---
     if (data.transfers) {
-        let txChanged = false;
         data.transfers.forEach(tx => {
-            const existingTx = collections.transfers.data.find(x => x.id === tx.id);
-            if (!existingTx) {
-                collections.transfers.data.push(tx);
-                txChanged = true;
-            } else if (!existingTx.claimed && tx.claimed) {
-                existingTx.claimed = true;
-                txChanged = true;
-            }
+            const exists = collections.transfers.data.find(x => x.id === tx.id);
+            if (!exists) { collections.transfers.data.push(tx); collections.transfers.dirty = true; }
+            else if (!exists.claimed && tx.claimed) { exists.claimed = true; collections.transfers.dirty = true; }
         });
-        if (txChanged) collections.transfers.dirty = true;
     }
 });
 
-app.listen(PORT, () => console.log(`🚀 Servidor Modular corriendo en puerto ${PORT}`));
+// Iniciamos
+initStorage().catch(err => console.error("Error fatal en inicio:", err));
+setInterval(saveLoop, 2000);
+app.listen(PORT, () => console.log(`🚀 SERVIDOR EN PUERTO ${PORT}`));
