@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legends of Memecoins - Ultimate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --font-space: 'Space Grotesk', sans-serif;
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.90);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-green: #10b981; --accent-red: #ef4444; --accent-cyan: #06b6d4;
+        }
+        body {
+            font-family: var(--font-space);
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            background-attachment: fixed; background-size: cover; color: #e2e8f0; min-height: 100vh;
+        }
+        /* Utiles */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
+        .glass-input { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); color: white; transition: all 0.2s; }
+        .glass-input:focus { border-color: #8b5cf6; outline: none; }
+        #chartContainer { width: 100%; height: 400px; position: relative; overflow: hidden; border-radius: 0.75rem; cursor: crosshair; }
+        #memecoinChart { width: 100%; height: 100%; display: block; }
+        .tab-active { border-bottom: 2px solid #8b5cf6; color: white; background: rgba(139,92,246,0.1); }
+        .tab-inactive { color: #94a3b8; border-bottom: 2px solid transparent; }
+        .view-section.hidden, .dash-tab-content.hidden { display: none !important; }
+        .swap-container { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 1rem; padding: 1rem; }
+        
+        /* PnL Card */
+        .pnl-card-container { background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1); backdrop-filter: blur(20px); position: relative; overflow: hidden; }
+        .pnl-bg-glow { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%); top: -100px; right: -100px; z-index: 0; pointer-events: none; }
+        .pnl-stamp { transform: rotate(-15deg); border: 4px solid currentColor; padding: 5px 15px; border-radius: 10px; font-weight: 900; text-transform: uppercase; opacity: 0.8; letter-spacing: 2px; }
+        
+        .bot-card:hover { transform: scale(1.02); border-color: rgba(139, 92, 246, 0.5); }
+        .animate-marquee { animation: marquee 15s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        .token-icon { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); }
+        .token-icon-lg { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid #8b5cf6; box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
+        
+        .player-card { transition: all 0.3s ease; }
+        .player-card:hover { transform: translateY(-2px); border-color: #8b5cf6; }
+
+        /* LOADING SCREEN */
+        #server-loading-screen {
+            position: fixed; inset: 0; z-index: 10000;
+            background: #0f172a; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .loader-ring {
+            width: 64px; height: 64px; border: 6px solid #1e293b; border-top-color: #8b5cf6;
+            border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-10 text-sm overflow-hidden">
+
+    <!-- PANTALLA DE CARGA (BLOQUEO) -->
+    <div id="server-loading-screen">
+        <div class="loader-ring"></div>
+        <h2 class="text-2xl font-bold text-white tracking-wider animate-pulse">CONECTANDO A GITHUB</h2>
+        <p id="loading-status" class="text-gray-400 text-xs mt-2 font-mono">Sincronizando base de datos...</p>
+        <button id="btn-retry-connect" class="hidden mt-6 px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg transition" onclick="location.reload()">
+            REINTENTAR
+        </button>
+    </div>
+
+    <!-- LOGIN OVERLAY -->
+    <div id="login-overlay" class="fixed inset-0 z-[9999] bg-[#0f172a] flex items-center justify-center p-4 hidden">
+        <div class="glass-panel max-w-md w-full p-8 rounded-3xl border border-indigo-500/30 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-600 to-pink-600"></div>
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 rounded-full bg-indigo-600 mx-auto mb-4 flex items-center justify-center text-3xl shadow-lg shadow-indigo-500/40">🚀</div>
+                <h1 class="text-3xl font-bold text-white tracking-tight">MEMECOIN TYCOON</h1>
+                <p class="text-gray-400 text-xs mt-2">Simulador de Trading & Bots</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-indigo-300 font-bold ml-1 uppercase">Usuario</label>
+                    <input id="login-user" type="text" placeholder="TraderLegend" class="glass-input w-full p-3 rounded-xl mt-1 text-lg">
+                </div>
+                <div>
+                    <label class="text-xs text-indigo-300 font-bold ml-1 uppercase">Contraseña</label>
+                    <input id="login-pass" type="password" placeholder="••••••••" class="glass-input w-full p-3 rounded-xl mt-1 text-lg">
+                </div>
+                <div id="login-error" class="text-red-400 text-xs font-bold text-center h-4"></div>
+                
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <button id="btn-register" class="py-3 rounded-xl border border-indigo-500/50 text-indigo-300 font-bold hover:bg-indigo-900/30 transition">Registrarse</button>
+                    <button id="btn-login" class="py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold shadow-lg shadow-indigo-500/30 hover:scale-[1.02] transition">Entrar</button>
+                </div>
+            </div>
+            <p class="text-center text-[10px] text-gray-500 mt-6">Conectado a servidor seguro v2.0</p>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="glass-panel sticky top-0 z-50 border-b-0 border-b-gray-700 shrink-0">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-xl shadow-lg">🚀</div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight text-white leading-none">LEGENDS OF</h1>
+                    <h1 class="font-bold text-lg tracking-tight text-purple-400 leading-none">MEMECOINS</h1>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="flex gap-4 bg-slate-900/60 p-2 rounded-xl border border-slate-700/50 items-center">
+                <div class="px-4 border-r border-slate-700">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-wider">Balance</p>
+                    <p id="balance-usd" class="font-mono font-bold text-green-400 text-lg">$---</p>
+                </div>
+                <div class="px-4 flex items-center gap-2">
+                     <div id="server-status-dot" class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
+                     <div class="leading-none">
+                         <div class="flex items-center gap-1">
+                             <p id="server-status-text" class="text-[10px] text-gray-400 font-bold uppercase">INIT...</p>
+                             <span id="ups-display" class="text-[9px] bg-slate-800 text-cyan-400 px-1 rounded font-mono hidden">0 UPS</span>
+                         </div>
+                         <p id="ping-display" class="text-[9px] text-gray-600 font-mono">--ms</p>
+                     </div>
+                </div>
+                <div class="px-2">
+                    <p class="text-[9px] text-gray-500 uppercase">Jugador</p>
+                    <p id="player-name" class="font-bold text-indigo-300">Invitado</p>
+                </div>
+                <button id="btn-logout" class="p-2 text-gray-500 hover:text-white" title="Cerrar Sesión"><i class="ph ph-sign-out"></i></button>
+            </div>
+
+            <!-- Nav -->
+            <nav class="flex gap-2 overflow-x-auto pb-1 md:pb-0">
+                <button data-view="dashboard" class="nav-btn px-4 py-2 rounded-lg text-xs font-bold bg-slate-700 text-gray-300 hover:bg-indigo-600 hover:text-white transition whitespace-nowrap">Dashboard</button>
+                <button data-view="market" class="nav-btn px-4 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-lg transition whitespace-nowrap">Mercado</button>
+                <button data-view="players" class="nav-btn px-4 py-2 rounded-lg text-xs font-bold bg-slate-700 text-gray-300 hover:bg-indigo-600 hover:text-white transition whitespace-nowrap"><i class="ph ph-users"></i> Jugadores</button>
+                <button data-view="bots" class="nav-btn px-4 py-2 rounded-lg text-xs font-bold bg-slate-700 text-gray-300 hover:bg-slate-600 transition whitespace-nowrap">Bots</button>
+                <button data-view="create" class="nav-btn px-4 py-2 rounded-lg text-xs font-bold bg-slate-700 text-gray-300 hover:bg-slate-600 transition whitespace-nowrap">Crear</button>
+                <button id="btn-show-pnl" class="ml-2 px-4 py-2 rounded-lg text-xs font-bold bg-gradient-to-r from-pink-500 to-yellow-500 text-white shadow-lg hover:shadow-pink-500/30 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="ph ph-camera"></i> Ver PnL
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN APP -->
+    <main id="app-main" class="flex-grow w-full p-2 md:p-4 max-w-7xl mx-auto">
+        <!-- DASHBOARD -->
+        <section data-view-id="dashboard" class="view-section hidden grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <!-- Left Controls -->
+            <div class="lg:col-span-3 flex flex-col gap-4">
+                <!-- Token Selector & Info -->
+                <div class="glass-panel p-4 rounded-xl shrink-0" id="token-selector-container">
+                    <label class="text-[10px] text-gray-400 uppercase font-bold mb-2 block">Token Activo</label>
+                    <select id="token-selector" class="glass-input w-full p-2 rounded-lg text-xs mb-3 bg-slate-800"><option value="">Seleccionar Token...</option></select>
+                    
+                    <div class="flex items-center gap-4 mb-4 bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
+                        <img id="active-token-img" src="" class="token-icon-lg bg-black hidden" alt="Token">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 id="active-token-name" class="font-bold text-white text-lg">---</h2>
+                                <span id="is-dev-badge" class="hidden px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-300 text-[9px] font-bold border border-yellow-500/50">DEV</span>
+                            </div>
+                            <p id="active-token-desc" class="text-xs text-gray-400 line-clamp-2 leading-tight">Sin descripción</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                        <div><p class="text-gray-500">Precio</p><p id="price-display" class="font-mono text-white font-bold">0.00</p></div>
+                        <div><p class="text-gray-500">Mkt Cap</p><p id="mc-display" class="font-mono text-yellow-400 font-bold">$0</p></div>
+                        <div><p class="text-gray-500">Liquidez</p><p id="liquidity-display" class="font-mono text-cyan-400 font-bold">$0</p></div>
+                        <div><p class="text-gray-500">Holders</p><p id="holders-count" class="font-mono text-pink-400 font-bold">0</p></div>
+                        <div class="col-span-2 mt-1">
+                            <div class="flex justify-between mb-1"><span class="text-gray-500">Convicción</span><span id="conviction-val" class="text-white font-bold">0%</span></div>
+                            <div class="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden"><div id="conviction-fill" class="h-full bg-gradient-to-r from-green-500 to-emerald-400" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Solo Visible para el Dev -->
+                    <div id="dev-controls-panel" class="hidden mt-4 pt-4 border-t border-slate-700/50">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-2">Panel de Desarrollador</p>
+                        <button id="btn-open-liq" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs shadow-lg hover:shadow-cyan-500/20 transition flex items-center justify-center gap-2">
+                            <i class="ph ph-drop"></i> <span id="btn-open-liq-text">Gestión Liquidez</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabs & Trading -->
+                <div class="glass-panel rounded-xl flex flex-col overflow-hidden">
+                    <div class="flex border-b border-slate-700 shrink-0 bg-slate-800/30">
+                        <button data-tab="trading" class="dash-tab-btn flex-1 py-3 text-[10px] font-bold uppercase tracking-wider tab-active transition">Trade</button>
+                        <button data-tab="holders" class="dash-tab-btn flex-1 py-3 text-[10px] font-bold uppercase tracking-wider tab-inactive transition">Holders</button>
+                        <button id="tab-dev-btn" data-tab="dev" class="hidden dash-tab-btn flex-1 py-3 text-[10px] font-bold uppercase tracking-wider tab-inactive transition text-yellow-400">Dev Tools</button>
+                        <button data-tab="top" class="dash-tab-btn flex-1 py-3 text-[10px] font-bold uppercase tracking-wider tab-inactive transition">Top</button>
+                        <button data-tab="rekt" class="dash-tab-btn flex-1 py-3 text-[10px] font-bold uppercase tracking-wider tab-inactive transition">Rekt</button>
+                    </div>
+
+                    <div class="p-4">
+                        <!-- Trading Tab -->
+                        <div data-tab-content="trading" class="space-y-4 dash-tab-content">
+                            <div class="space-y-2">
+                                <label class="text-xs text-gray-400 font-bold">Monto (USD)</label>
+                                <input id="trade-amount" type="number" placeholder="10.00" class="glass-input w-full p-3 rounded-xl text-sm font-mono text-right">
+                                
+                                <div class="grid grid-cols-5 gap-1 my-2"> 
+                                    <button class="quick-sell-btn p-1 rounded bg-slate-700 hover:bg-slate-600 text-[9px] font-mono text-gray-300 transition" data-percentage="10">10%</button> 
+                                    <button class="quick-sell-btn p-1 rounded bg-slate-700 hover:bg-slate-600 text-[9px] font-mono text-gray-300 transition" data-percentage="25">25%</button>
+                                    <button class="quick-sell-btn p-1 rounded bg-slate-700 hover:bg-slate-600 text-[9px] font-mono text-gray-300 transition" data-percentage="50">50%</button>
+                                    <button class="quick-sell-btn p-1 rounded bg-slate-700 hover:bg-slate-600 text-[9px] font-mono text-gray-300 transition" data-percentage="75">75%</button>
+                                    <button class="quick-sell-btn p-1 rounded bg-slate-700 hover:bg-slate-600 text-[9px] font-mono text-gray-300 transition" data-percentage="100">ALL</button>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button id="buy-btn" class="bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-900/20 transition transform active:scale-95">COMPRAR</button>
+                                    <button id="sell-btn" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-red-900/20 transition transform active:scale-95">VENDER</button>
+                                </div>
+                                <div class="flex items-center justify-between text-xs mt-2">
+                                     <span class="text-gray-400">Tus Tokens:</span>
+                                     <span id="balance-token" class="font-mono text-white">0</span>
+                                </div>
+                                
+                                <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50 text-xs space-y-1 mt-2">
+                                    <div class="flex justify-between"><span>Tu PnL:</span> <span id="user-pnl" class="font-mono font-bold">$0.00 (0%)</span></div>
+                                    <div class="flex justify-between"><span>Costo Base:</span> <span id="user-entry" class="font-mono text-gray-400">$0.00</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Holders Tab -->
+                        <div data-tab-content="holders" class="hidden dash-tab-content h-64 overflow-y-auto custom-scrollbar">
+                            <h3 class="text-[10px] font-bold text-gray-500 uppercase mb-2 sticky top-0 bg-slate-900/90 py-1">Top Holders</h3>
+                            <div id="holders-list" class="space-y-1"></div>
+                        </div>
+
+                        <!-- Dev Tab (PROTECTED) -->
+                        <div data-tab-content="dev" class="hidden dash-tab-content space-y-3">
+                            <div class="space-y-2">
+                                <h3 class="text-[10px] font-bold text-orange-400 uppercase">Acciones de Creador</h3>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button id="burn-1-btn" class="p-2 rounded bg-orange-900/40 border border-orange-500/30 text-[10px] font-bold text-orange-300 hover:bg-orange-900/60 transition">🔥 Burn 1%</button>
+                                    <button id="burn-10-btn" class="p-2 rounded bg-orange-900/40 border border-orange-500/30 text-[10px] font-bold text-orange-300 hover:bg-orange-900/60 transition">🔥🔥 Burn 10%</button>
+                                </div>
+                                <button id="btn-audit" class="w-full p-2 rounded bg-purple-900/40 border border-purple-500/30 text-xs font-bold text-purple-300 hover:bg-purple-900/60 transition flex items-center justify-center gap-2"><i class="ph ph-shield-check"></i> Auditoría ($500)</button>
+                                <button id="btn-partner" class="w-full p-2 rounded bg-cyan-900/40 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:bg-cyan-900/60 transition flex items-center justify-center gap-2"><i class="ph ph-handshake"></i> Partnership ($500)</button>
+                                <button id="btn-influencer" class="w-full p-2 rounded bg-pink-900/40 border border-pink-500/30 text-xs font-bold text-pink-300 hover:bg-pink-900/60 transition flex items-center justify-center gap-2"><i class="ph ph-megaphone"></i> Influencer ($2k)</button>
+                            </div>
+                        </div>
+
+                        <!-- Top Trades Tab -->
+                        <div data-tab-content="top" class="hidden dash-tab-content h-64 overflow-y-auto custom-scrollbar">
+                            <h3 class="text-[10px] font-bold text-green-400 uppercase mb-2 sticky top-0 bg-slate-900/90 py-1">Ganancias Legendarias</h3>
+                            <div id="top-trades-list" class="space-y-1"></div>
+                        </div>
+                        
+                        <!-- Rekt Tab -->
+                        <div data-tab-content="rekt" class="hidden dash-tab-content h-64 overflow-y-auto custom-scrollbar">
+                            <h3 class="text-[10px] font-bold text-red-500 uppercase mb-2 sticky top-0 bg-slate-900/90 py-1">Cementerio Rekt</h3>
+                            <div id="rekt-trades-list" class="space-y-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Chart (9 cols) -->
+            <div class="lg:col-span-9 flex flex-col gap-4">
+                <!-- Ticker -->
+                <div class="glass-panel p-2 rounded-lg flex items-center gap-3 overflow-hidden bg-black/40">
+                    <span class="text-[10px] font-bold bg-red-600 text-white px-2 py-0.5 rounded uppercase tracking-wider animate-pulse">LIVE</span>
+                    <div class="flex-1 overflow-hidden whitespace-nowrap relative h-4">
+                        <div id="news-ticker" class="absolute top-0 text-xs font-mono text-gray-300 whitespace-nowrap animate-marquee">
+                            Esperando noticias del mercado cripto...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="glass-panel rounded-xl p-4 flex flex-col h-full relative">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex gap-2">
+                            <button data-tf="1s" class="tf-btn px-3 py-1 rounded bg-indigo-600 text-white text-xs font-bold shadow transition">1s</button>
+                            <button data-tf="1m" class="tf-btn px-3 py-1 rounded bg-slate-700 text-gray-400 text-xs font-bold hover:text-white transition">1m</button>
+                        </div>
+                        <div id="price-overlay" class="text-xl font-mono text-green-400 font-bold tracking-tight"></div>
+                    </div>
+                    <div id="chartContainer" class="bg-[#0b1221] rounded-lg border border-slate-700/50 relative w-full flex-grow cursor-crosshair">
+                        <canvas id="memecoinChart"></canvas>
+                        <!-- Loader visual if empty -->
+                        <div id="chart-loader" class="absolute inset-0 flex items-center justify-center text-gray-500 font-mono text-xs hidden">CARGANDO DATOS...</div>
+                    </div>
+                    <!-- Logs -->
+                    <div class="h-40 mt-4 flex flex-col border-t border-slate-700/50 pt-2">
+                        <h3 class="text-[10px] font-bold text-gray-500 uppercase mb-2">Transacciones en Tiempo Real</h3>
+                        <div id="trade-log" class="flex-1 overflow-y-auto text-xs font-mono space-y-1 custom-scrollbar pr-2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: PLAYERS (NEW) -->
+        <section data-view-id="players" class="view-section hidden">
+            <div class="glass-panel p-8 rounded-2xl h-full overflow-y-auto">
+                <h2 class="text-3xl font-bold text-white mb-2">Jugadores Conectados</h2>
+                <p class="text-gray-400 text-sm mb-8">Compite contra otros traders y envía dinero a tus amigos.</p>
+                
+                <div id="players-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Players injected here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEWS: BOTS -->
+        <section data-view-id="bots" class="view-section hidden h-full">
+            <div class="glass-panel p-8 rounded-2xl h-full overflow-y-auto">
+                <h2 class="text-3xl font-bold text-white mb-8">Salón de la Fama (Bots)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-green-400 mb-4 pb-2 border-b border-green-500/20">🤑 Top Winners</h3>
+                        <div id="bot-winners-list" class="space-y-3"></div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-red-400 mb-4 pb-2 border-b border-red-500/20">💀 Rekt List</h3>
+                        <div id="bot-losers-list" class="space-y-3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: CREATE -->
+        <section data-view-id="create" class="view-section hidden flex items-center justify-center min-h-[600px]">
+            <div class="glass-panel p-10 rounded-3xl max-w-lg w-full shadow-2xl relative border border-indigo-500/30">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-t-3xl"></div>
+                <h2 class="text-3xl font-bold text-white mb-6">Lanzar Nuevo Token</h2>
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold ml-1">Símbolo (Ticker)</label>
+                        <input id="create-name" type="text" placeholder="Ej: PEPE" class="glass-input w-full p-3 rounded-xl text-lg font-bold mt-1">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold ml-1">Temática</label>
+                        <input id="create-theme" type="text" placeholder="Ej: Gatos, AI, Elon..." class="glass-input w-full p-3 rounded-xl mt-1">
+                    </div>
+                    
+                    <!-- NEW IMAGE INPUT WITH PREVIEW -->
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold ml-1">Imagen del Token</label>
+                        <div class="flex gap-4 mt-2">
+                            <!-- Preview Box -->
+                            <div class="w-16 h-16 shrink-0 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden">
+                                <img id="create-img-preview" src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" class="w-full h-full object-cover opacity-50" alt="Preview">
+                            </div>
+                            
+                            <div class="flex-1 space-y-2">
+                                <div class="flex gap-2">
+                                    <input id="create-img-url" type="text" placeholder="https://..." class="glass-input flex-1 p-3 rounded-xl text-sm">
+                                    <label class="p-3 rounded-xl bg-slate-700 text-white cursor-pointer hover:bg-slate-600 transition flex items-center justify-center min-w-[50px]">
+                                        <i class="ph ph-upload-simple"></i>
+                                        <input id="create-img-file" type="file" accept="image/*" class="hidden">
+                                    </label>
+                                </div>
+                                <p class="text-[9px] text-gray-500">Vista previa automática al subir o pegar URL</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW DESCRIPTION INPUT -->
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold ml-1">Descripción</label>
+                        <textarea id="create-desc" placeholder="Describe tu proyecto..." class="glass-input w-full p-3 rounded-xl mt-1 text-sm h-20 resize-none"></textarea>
+                    </div>
+                    
+                    <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                        <label class="text-xs text-gray-400 uppercase font-bold mb-3 block">Selecciona Plataforma</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button data-exchange="Met Liquidity" class="create-type-btn p-3 rounded-lg bg-indigo-600 text-white text-xs font-bold shadow-lg transition">Met Liquidity</button>
+                            <button data-exchange="AMM" class="create-type-btn p-3 rounded-lg bg-slate-700 text-gray-400 text-xs font-bold hover:bg-slate-600 transition">AMM (Pump)</button>
+                        </div>
+                        
+                        <div id="create-inputs" class="space-y-3 mt-4">
+                            <input id="create-supply" type="number" placeholder="Supply Total" class="glass-input w-full p-3 rounded-lg text-sm">
+                            <input id="create-autobuy" type="number" placeholder="Auto-buy (USD) - Opcional" class="glass-input w-full p-3 rounded-lg text-sm hidden">
+                        </div>
+                    </div>
+
+                    <button id="btn-launch" class="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-xl shadow-indigo-500/20 hover:scale-[1.02] transition-transform text-lg mt-2">
+                        LANZAR AL MERCADO ($10)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: MARKET -->
+        <section data-view-id="market" class="view-section">
+            <div class="glass-panel p-8 rounded-2xl h-full">
+                <h2 class="text-2xl font-bold text-white mb-6">Explorador de Mercado</h2>
+                <div id="market-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                <div id="market-empty" class="text-center py-20 hidden">
+                    <p class="text-gray-500 text-lg">No hay tokens creados aún.</p>
+                    <button onclick="changeView('create')" class="mt-4 text-indigo-400 hover:text-indigo-300 font-bold">Crear el primero &rarr;</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- LIQUIDITY MODAL -->
+    <div id="liq-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[150] hidden">
+        <div class="glass-panel p-8 rounded-3xl max-w-sm w-full border border-cyan-500/30 relative">
+            <button id="liq-modal-close" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl">✕</button>
+            
+            <div class="flex justify-center mb-8">
+                <div class="bg-slate-900 rounded-xl p-1 flex gap-1 border border-slate-700">
+                    <button data-liq-mode="add" class="liq-tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-colors liq-tab-active">Añadir</button>
+                    <button data-liq-mode="remove" class="liq-tab-btn px-6 py-2 rounded-lg text-xs font-bold transition-colors liq-tab-inactive">Retirar</button>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="swap-container">
+                    <div class="flex justify-between mb-1"><label class="text-[10px] uppercase font-bold text-gray-500">Cantidad Token</label><span id="liq-token-bal" class="text-[10px] text-gray-400">Bal: 0</span></div>
+                    <div class="flex items-center gap-3">
+                        <span id="liq-token-symbol" class="font-bold text-xl text-white">XXX</span>
+                        <input id="liq-input-token" type="number" placeholder="0.0" class="bg-transparent text-right text-2xl font-mono text-white w-full outline-none">
+                    </div>
+                </div>
+                
+                <div class="flex justify-center -my-4 z-10 relative">
+                    <div class="bg-slate-900 p-2 rounded-full border border-slate-600 text-cyan-400 shadow-xl">
+                        <i class="ph ph-arrows-down-up text-lg"></i>
+                    </div>
+                </div>
+
+                <div class="swap-container">
+                    <div class="flex justify-between mb-1"><label class="text-[10px] uppercase font-bold text-gray-500">Cantidad USD</label><span id="liq-usd-bal" class="text-[10px] text-gray-400">Bal: $0</span></div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold text-xl text-green-400">$</span>
+                        <input id="liq-input-usd" type="number" placeholder="0.0" class="bg-transparent text-right text-2xl font-mono text-white w-full outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-between items-center text-xs text-gray-400 bg-slate-900/50 p-3 rounded-lg">
+                <span>Estado del Pool</span>
+                <span id="liq-status-text" class="text-green-400 font-bold">Activo</span>
+            </div>
+
+            <button id="btn-confirm-liq" class="w-full mt-4 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold shadow-lg shadow-cyan-500/20 transition">Confirmar</button>
+        </div>
+    </div>
+
+    <!-- SEND MONEY MODAL -->
+    <div id="send-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[150] hidden">
+        <div class="glass-panel p-8 rounded-3xl max-w-xs w-full border border-indigo-500/30 relative text-center">
+            <button id="send-modal-close" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl">✕</button>
+            <h3 class="text-xl font-bold text-white mb-2">Enviar Dinero</h3>
+            <p class="text-gray-400 text-xs mb-6">A: <span id="send-to-user" class="text-indigo-400 font-bold text-lg block">User</span></p>
+            
+            <input id="send-amount" type="number" placeholder="Monto USD" class="glass-input w-full p-3 rounded-xl mb-4 text-center text-lg font-mono">
+            
+            <button id="btn-confirm-send" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg transition">Enviar Ahora</button>
+        </div>
+    </div>
+
+    <!-- PNL MODAL -->
+    <div id="pnl-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center z-[200] hidden">
+        <div class="pnl-card-container w-full max-w-sm rounded-[2rem] p-8 relative border border-white/10">
+            <div class="pnl-bg-glow"></div>
+            <button id="pnl-modal-close" class="absolute top-6 right-6 text-white/30 hover:text-white z-20 text-xl">✕</button>
+            
+            <div class="flex flex-col items-center text-center space-y-8 relative z-10">
+                <div class="space-y-2">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-3xl mx-auto shadow-2xl shadow-purple-500/40 mb-4">🐸</div>
+                    <h3 class="text-gray-400 text-[10px] font-bold tracking-[0.2em] uppercase">Meme Tycoon Report</h3>
+                    <h3 id="pnl-token-name" class="text-indigo-400 text-xs font-bold uppercase hidden"></h3>
+                </div>
+
+                <div class="space-y-1">
+                    <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">Total PnL</p>
+                    <h2 id="pnl-card-amount" class="text-5xl font-mono font-bold text-white tracking-tighter drop-shadow-lg">$0.00</h2>
+                    <div class="pt-2">
+                        <span id="pnl-card-percent-box" class="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                            <span id="pnl-card-percent" class="text-sm font-bold text-gray-300">0.00%</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 w-full">
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5 backdrop-blur-sm">
+                        <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Net Worth</p>
+                        <p id="pnl-card-networth" class="font-mono font-bold text-white text-lg">$10,000</p>
+                    </div>
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5 backdrop-blur-sm">
+                        <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Tokens Held</p>
+                        <p id="pnl-card-tokens" class="font-mono font-bold text-white text-lg">0</p>
+                    </div>
+                </div>
+
+                <div id="pnl-stamp" class="pnl-stamp text-green-500 border-green-500 text-sm">WAGMI</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UTILS MODALS -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] hidden">
+        <div class="glass-panel p-6 rounded-2xl max-w-xs w-full text-center">
+            <h3 id="modal-title" class="text-lg font-bold mb-2 text-white">Info</h3>
+            <p id="modal-content" class="text-gray-300 text-sm mb-6"></p>
+            <button id="modal-close" class="w-full py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs">Entendido</button>
+        </div>
+    </div>
+
+    <!-- BOT DETAILS -->
+    <div id="bot-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] hidden">
+        <div class="glass-panel p-6 rounded-2xl max-w-md w-full border border-purple-500/30">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 id="bot-modal-name" class="text-2xl font-bold text-white">Bot Name</h3>
+                    <span id="bot-modal-strat" class="text-[10px] uppercase font-bold bg-purple-500/20 text-purple-300 px-2 py-1 rounded">Strategy</span>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-gray-500 uppercase">Win Rate</p>
+                    <p id="bot-modal-winrate" class="text-xl font-mono font-bold text-white">0%</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">
+                    <p class="text-[10px] text-gray-500 uppercase">Balance</p>
+                    <p id="bot-modal-balance" class="font-mono font-bold text-white">$0</p>
+                </div>
+                <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">
+                    <p class="text-[10px] text-gray-500 uppercase">Total PnL</p>
+                    <p id="bot-modal-pnl" class="font-mono font-bold text-white">$0</p>
+                </div>
+            </div>
+            <div class="bg-slate-900/30 p-3 rounded-xl border border-slate-800 h-32 overflow-y-auto custom-scrollbar mb-4">
+                <div id="bot-modal-holdings" class="space-y-1"></div>
+            </div>
+            <button id="bot-modal-close" class="w-full py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-sm">Cerrar Detalle</button>
+        </div>
+    </div>
+
+<script>
+    // --- CONFIGURACIÓN DE CONEXIÓN ---
+    // IMPORTANTE: REEMPLAZA ESTO CON TU URL DE RAILWAY
+    const CONSTANTS = { 
+        DEFAULT_USD: 100,
+        SERVER_URL: 'https://backend-memecoin-production.up.railway.app', 
+        TICK_RATE: 0, // MAXIMA VELOCIDAD (0ms delay)
+        BOT_COUNT: 200,
+        INFLUENCER_COST: 2000,
+        DEFAULT_ICON: "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+    };
+
+    // Estructura Global para Sincronización
+    let globalData = {
+        users: {},
+        tokens: {}, 
+        transfers: [], // Buzon de transferencias
+        chat: [],
+        bots: [] 
+    };
+
+    let currentUser = null; 
+    let initialLoadDone = false; // ESTO BLOQUEA TODO HASTA LA CARGA
+
+    let state = {
+        user: { 
+            usd: CONSTANTS.DEFAULT_USD, 
+            tokens: 0, 
+            activeTokenId: null, 
+            holdings: {}, 
+            tradeHistory: [] 
+        },
+        tokens: {}, 
+        holders: {}, topTrades: {}, topLosses: {}, bots: [],
+        activeToken: null, 
+        createMode: 'Met Liquidity', 
+        liqMode: 'add', 
+        simulationRunning: true,
+        timeframe: '1s',
+        serverConnected: false,
+        transferTarget: null
+    };
+    let chartCtx = null, DOM = {};
+    let updatesPerSecond = 0;
+    let upsCounter = 0;
+
+    // --- NUEVO SISTEMA DE INICIO BLINDADO ---
+    async function init() {
+        cacheDOM(); 
+        
+        // 1. Mostrar pantalla de carga y bloquear todo
+        DOM.loadingOverlay.classList.remove('hidden');
+        
+        // 2. Esperar conexión exitosa antes de continuar
+        await waitForServerConnection();
+        
+        // 3. Una vez conectados y DATOS CARGADOS, verificamos sesión
+        const storedUser = localStorage.getItem('active_user');
+        if(storedUser) {
+            currentUser = storedUser;
+            // Si el usuario existe en los datos descargados, usamos SU SALDO REAL
+            if (globalData.users[currentUser]) {
+                state.user = { ...globalData.users[currentUser] };
+                // REGLA DE ORO: Si ya tenemos datos, NO usar el default
+                console.log("Datos recuperados para", currentUser, state.user.usd);
+            }
+            DOM.loginOverlay.classList.add('hidden');
+            DOM.playerName.innerText = currentUser;
+        } else {
+            DOM.loginOverlay.classList.remove('hidden');
+        }
+
+        // 4. Si los bots vinieron del servidor, usarlos. Si no, crear nuevos.
+        if(!state.bots || state.bots.length === 0) {
+            if (globalData.bots && globalData.bots.length > 0) {
+                state.bots = globalData.bots;
+            } else {
+                initBots(); 
+            }
+        }
+        
+        setupEvents();
+        
+        // Loop principal (Animación UI) - Máxima velocidad
+        setInterval(gameLoop, CONSTANTS.TICK_RATE);
+        
+        // Contador de UPS visual
+        setInterval(() => {
+            if(DOM.upsDisplay) DOM.upsDisplay.innerText = updatesPerSecond + " UPS";
+            updatesPerSecond = 0;
+        }, 1000);
+        
+        // --- SISTEMA DE RED TURBO (SIN SETINTERVAL) ---
+        // Dispara la red tan rápido como sea posible secuencialmente
+        startNetworkLoops();
+    }
+
+    function startNetworkLoops() {
+        // Inicia el bucle de sincronización inteligente
+        const syncLoop = async () => {
+            if(currentUser && initialLoadDone) {
+                try {
+                    console.log("🔄 actualizando datos..."); // LOG DE ACTUACION
+                    
+                    // Ejecuta subida y bajada en paralelo para máxima velocidad
+                    // pero espera a que terminen antes de lanzar la siguiente
+                    const start = performance.now();
+                    
+                    // AHORA AMBOS LADOS RECIBEN DATOS ACTUALIZADOS
+                    const p1 = syncToServer(false);
+                    const p2 = syncFromServer();
+                    
+                    await Promise.all([p1, p2]);
+                    
+                    updatesPerSecond++;
+                    
+                    // Cálculo de latencia real
+                    const lat = Math.round(performance.now() - start);
+                    DOM.ping.innerText = lat + "ms";
+                    
+                } catch (e) {
+                    console.error("Sync error, retrying...", e);
+                }
+            }
+            // Llama a la siguiente iteración INMEDIATAMENTE (0ms delay)
+            // Velocidad de la luz mode: Activado
+            setTimeout(syncLoop, 0); 
+        };
+        syncLoop();
+    }
+
+    // --- FUNCIÓN CLAVE: ESPERAR AL SERVIDOR ---
+    async function waitForServerConnection() {
+        let attempts = 0;
+        while (!initialLoadDone) {
+            try {
+                DOM.loadingStatus.innerText = `Intentando conectar (Intento ${attempts+1})...`;
+                const start = Date.now();
+                // ANTI-CACHE: Agregamos timestamp
+                const res = await fetch(`${CONSTANTS.SERVER_URL}/api/load?t=${Date.now()}`);
+                const json = await res.json();
+                const lat = Date.now() - start;
+                
+                if(json.success && json.data) {
+                    console.log("📦 DATOS RECIBIDOS:", json.data);
+                    
+                    // CARGAR DATOS GLOBALES ANTES DE INICIAR NADA
+                    globalData = json.data;
+                    
+                    // Asegurar estructuras
+                    if(!globalData.users) globalData.users = {};
+                    if(!globalData.tokens) globalData.tokens = {};
+                    if(!globalData.bots) globalData.bots = [];
+                    
+                    // Hydrate local state tokens immediately
+                    state.tokens = globalData.tokens;
+                    
+                    // Desbloquear
+                    initialLoadDone = true;
+                    state.serverConnected = true;
+                    
+                    DOM.loadingOverlay.classList.add('hidden'); // OCULTAR PANTALLA DE CARGA
+                    DOM.loadingOverlay.style.opacity = '0';
+                    setTimeout(() => DOM.loadingOverlay.style.display = 'none', 500);
+                    
+                    DOM.srvDot.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
+                    DOM.srvText.innerText = "ONLINE";
+                    DOM.srvText.className = "text-[10px] text-green-400 font-bold uppercase";
+                    DOM.ping.innerText = lat + "ms";
+                    
+                    return; // Salir del bucle
+                }
+            } catch (e) {
+                console.error("Fallo de conexión:", e);
+                DOM.loadingStatus.innerText = "Esperando servidor... (Puede tardar si se está reiniciando)";
+            }
+            
+            // Esperar 2 segundos antes de reintentar
+            await new Promise(r => setTimeout(r, 2000));
+            attempts++;
+            
+            // Si tarda mucho, mostrar botón de reintentar manual
+            if (attempts > 5) DOM.btnRetry.classList.remove('hidden');
+        }
+    }
+
+    function cacheDOM() {
+        const g = (id) => document.getElementById(id);
+        DOM = {
+            // Loading Screen
+            loadingOverlay: g('server-loading-screen'),
+            loadingStatus: g('loading-status'),
+            btnRetry: g('btn-retry-connect'),
+
+            // Login
+            loginOverlay: g('login-overlay'), loginUser: g('login-user'), loginPass: g('login-pass'), 
+            btnLogin: g('btn-login'), btnRegister: g('btn-register'), loginError: g('login-error'),
+            playerName: g('player-name'), btnLogout: g('btn-logout'),
+
+            // Header
+            balanceUsd: g('balance-usd'), balanceToken: g('balance-token'),
+            srvDot: g('server-status-dot'), srvText: g('server-status-text'), ping: g('ping-display'),
+            upsDisplay: g('ups-display'), // NEW
+            navBtns: document.querySelectorAll('.nav-btn'), btnShowPnl: g('btn-show-pnl'),
+            
+            // Views
+            views: document.querySelectorAll('.view-section'), playersList: g('players-list'),
+            
+            // Dashboard Inputs
+            tokenSelector: g('token-selector'), tokenCont: g('token-selector-container'),
+            price: g('price-display'), mc: g('mc-display'), liq: g('liquidity-display'), holders: g('holders-count'),
+            convictionVal: g('conviction-val'), convictionFill: g('conviction-fill'),
+            btnOpenLiq: g('btn-open-liq'), btnOpenLiqTxt: g('btn-open-liq-text'), devControls: g('dev-controls-panel'),
+            activeTokenImg: g('active-token-img'), activeTokenName: g('active-token-name'), activeTokenDesc: g('active-token-desc'), isDevBadge: g('is-dev-badge'),
+            
+            // Tabs
+            tabs: document.querySelectorAll('.dash-tab-btn'), tabContents: document.querySelectorAll('.dash-tab-content'), tabDev: g('tab-dev-btn'),
+            
+            // Trading
+            tradeAmt: g('trade-amount'), buyBtn: g('buy-btn'), sellBtn: g('sell-btn'), quickBtns: document.querySelectorAll('.quick-sell-btn'),
+            userPnl: g('user-pnl'), userEntry: g('user-entry'),
+            
+            // Chart & Logs
+            chart: g('memecoinChart'), chartCont: g('chartContainer'), chartLoader: g('chart-loader'),
+            tradeLog: g('trade-log'), news: g('news-ticker'), priceOverlay: g('price-overlay'),
+            tfBtns: document.querySelectorAll('.tf-btn'),
+            
+            // Lists
+            holdersList: g('holders-list'), topList: g('top-trades-list'), rektList: g('rekt-trades-list'),
+            botWinList: g('bot-winners-list'), botLoseList: g('bot-losers-list'), marketList: g('market-list'), marketEmpty: g('market-empty'),
+            
+            // Create
+            createName: g('create-name'), createTheme: g('create-theme'), createBtns: document.querySelectorAll('.create-type-btn'),
+            createSupply: g('create-supply'), createAutoBuy: g('create-autobuy'), btnLaunch: g('btn-launch'),
+            createInputs: g('create-inputs'), createImgUrl: g('create-img-url'), createImgFile: g('create-img-file'), createDesc: g('create-desc'),
+            createImgPreview: g('create-img-preview'),
+
+            // Modals
+            modal: g('custom-modal'), mTitle: g('modal-title'), mContent: g('modal-content'), mClose: g('modal-close'),
+            
+            // Send Money Modal
+            sendModal: g('send-modal'), sendClose: g('send-modal-close'), sendTo: g('send-to-user'), sendAmt: g('send-amount'), sendConfirm: g('btn-confirm-send'),
+
+            // Liq Modal
+            liqModal: g('liq-modal'), liqClose: g('liq-modal-close'), liqTabs: document.querySelectorAll('.liq-tab-btn'),
+            liqInToken: g('liq-input-token'), liqInUsd: g('liq-input-usd'), liqConfirm: g('btn-confirm-liq'),
+            liqTokSym: g('liq-token-symbol'), liqTokBal: g('liq-token-bal'), liqUsdBal: g('liq-usd-bal'), liqStatus: g('liq-status-text'),
+            
+            // PnL Modal
+            pnlModal: g('pnl-modal'), pnlClose: g('pnl-modal-close'),
+            pnlAmt: g('pnl-card-amount'), pnlPct: g('pnl-card-percent'), pnlNw: g('pnl-card-networth'), pnlTok: g('pnl-card-tokens'), pnlStamp: g('pnl-stamp'), pnlBox: g('pnl-card-percent-box'), pnlTokenName: g('pnl-token-name'),
+            
+            // Bot Modal
+            botModal: g('bot-modal'), bmName: g('bot-modal-name'), bmStrat: g('bot-modal-strat'), bmBal: g('bot-modal-balance'), bmPnl: g('bot-modal-pnl'), bmWin: g('bot-modal-winrate'), bmHold: g('bot-modal-holdings'), bmClose: g('bot-modal-close'),
+            
+            // Dev Actions
+            btnBurn1: g('burn-1-btn'), btnBurn10: g('burn-10-btn'), btnAudit: g('btn-audit'), btnPartner: g('btn-partner'), btnInf: g('btn-influencer')
+        };
+        if(DOM.chart) chartCtx = DOM.chart.getContext('2d');
+    }
+
+    // --- HELPER: BASE64 ---
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    // --- AUTH & SYNC ---
+
+    async function authUser(isRegister) {
+        const u = DOM.loginUser.value.trim();
+        const p = DOM.loginPass.value.trim();
+        
+        if(!u || !p) { DOM.loginError.innerText = "Completa los campos"; return; }
+        
+        // YA NO NECESITAMOS FETCH AQUÍ PORQUE SE HIZO AL INICIO
+        // Solo verificamos contra globalData
+        
+        if(isRegister) {
+            if(globalData.users[u]) { DOM.loginError.innerText = "Usuario ya existe"; return; }
+            globalData.users[u] = { usd: CONSTANTS.DEFAULT_USD, holdings: {}, pass: p };
+            currentUser = u;
+            state.user = { ...globalData.users[u], tradeHistory: [] };
+            await syncToServer(true);
+        } else {
+            if(!globalData.users[u] || globalData.users[u].pass !== p) { 
+                DOM.loginError.innerText = "Credenciales inválidas"; return; 
+            }
+            currentUser = u;
+            // CARGA CRÍTICA DEL ESTADO GUARDADO
+            state.user = { ...globalData.users[u] };
+            // Asegurar que holdings existe
+            if(!state.user.holdings) state.user.holdings = {};
+        }
+
+        localStorage.setItem('active_user', currentUser);
+        DOM.playerName.innerText = currentUser;
+        DOM.loginOverlay.classList.add('hidden');
+        DOM.upsDisplay.classList.remove('hidden'); // Show UPS
+        updateUI();
+        changeView('market');
+    }
+
+    // --- NUEVO SYNC (BIDIRECCIONAL) ---
+    async function syncToServer(force = false) {
+        // SAFETY LOCK
+        if(!currentUser || !initialLoadDone || (!state.serverConnected && !force)) return;
+
+        // 1. Preparar usuario actual
+        globalData.users[currentUser] = {
+            usd: state.user.usd,
+            holdings: state.user.holdings,
+            pass: globalData.users[currentUser]?.pass
+        };
+
+        // 2. EMPAQUETAR TOKENS 
+        const tokensToSend = {};
+        Object.keys(state.tokens).forEach(tid => {
+            tokensToSend[tid] = {
+                ...state.tokens[tid],
+                holders: state.holders[tid] || {}, 
+                topTrades: state.topTrades[tid] || [], 
+                rektTrades: state.topLosses[tid] || [] 
+            };
+        });
+        globalData.tokens = { ...globalData.tokens, ...tokensToSend };
+        
+        // 3. ENVIAR BOTS
+        globalData.bots = state.bots;
+
+        try {
+            const res = await fetch(`${CONSTANTS.SERVER_URL}/api/stream`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: globalData })
+            });
+            // PROCESAR RESPUESTA (ACTUALIZACIÓN INMEDIATA)
+            const json = await res.json();
+            if(json.data) processIncomingData(json.data);
+            
+            blinkServerStatus(true);
+        } catch (e) {
+            blinkServerStatus(false);
+        }
+    }
+
+    async function syncFromServer() {
+        if(!currentUser) return;
+        try {
+            // ANTI-CACHE: ?t=...
+            const res = await fetch(`${CONSTANTS.SERVER_URL}/api/load?t=${Date.now()}`);
+            const json = await res.json();
+            
+            if(json.data) {
+                console.log("📦 DATOS RECIBIDOS:", json.data); // LOG DE DATOS
+                processIncomingData(json.data);
+            }
+            
+            state.serverConnected = true;
+            DOM.srvDot.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
+            DOM.srvText.innerText = "TURBO"; // Indicador visual de modo rápido
+            DOM.srvText.className = "text-[10px] text-green-400 font-bold uppercase";
+        } catch (e) {
+            state.serverConnected = false;
+            DOM.srvDot.className = "w-2 h-2 rounded-full bg-red-500 animate-pulse";
+            DOM.srvText.innerText = "OFFLINE";
+            DOM.srvText.className = "text-[10px] text-gray-400 font-bold uppercase";
+        }
+    }
+
+    function processIncomingData(remoteData) {
+        // ACTUALIZACIÓN AGRESIVA DE TOKENS
+        Object.keys(remoteData.tokens || {}).forEach(tid => {
+            const rToken = remoteData.tokens[tid];
+            const lToken = state.tokens[tid];
+            
+            if(!lToken) {
+                state.tokens[tid] = rToken;
+            } else {
+                // SOBRESCRIBIR TODO LO IMPORTANTE SIEMPRE
+                lToken.marketCap = rToken.marketCap;
+                lToken.liquidityDepth = rToken.liquidityDepth;
+                lToken.conviction = rToken.conviction;
+                lToken.quality = rToken.quality;
+                
+                // Merge inteligente solo para charts
+                if (rToken.chartData && (!lToken.chartData || rToken.chartData['1s'].length > lToken.chartData['1s'].length)) {
+                    lToken.chartData = rToken.chartData;
+                }
+            }
+
+            if(rToken.holders) state.holders[tid] = rToken.holders;
+            if(rToken.topTrades) state.topTrades[tid] = rToken.topTrades;
+            if(rToken.rektTrades) state.topLosses[tid] = rToken.rektTrades;
+        });
+        
+        // BOTS
+        if (remoteData.bots && remoteData.bots.length > 0) {
+             if (remoteData.bots.length !== state.bots.length) {
+                 state.bots = remoteData.bots;
+             }
+        }
+        
+        globalData = remoteData;
+        if(!globalData.users) globalData.users = {};
+        
+        // Transferencias
+        if(globalData.transfers) {
+            globalData.transfers.forEach(tx => {
+                if(tx.to === currentUser && !tx.claimed) {
+                    state.user.usd += tx.amount;
+                    tx.claimed = true; 
+                    showModal("¡Dinero Recibido!", `${tx.from} te envió $${formatNumber(tx.amount)}`);
+                    syncToServer(true); 
+                }
+            });
+        }
+
+        if(state.activeToken && state.tokens[state.activeToken.id]) {
+            state.activeToken = state.tokens[state.activeToken.id]; 
+        }
+        
+        renderMarket();
+        renderPlayersView(); 
+        renderDashboardRealtime(); 
+        renderHoldersListTab();
+        renderTopTradesTab();
+        renderRektTradesTab();
+    }
+
+    function logout() { localStorage.removeItem('active_user'); location.reload(); }
+    function blinkServerStatus(ok) {}
+
+    function initBots() {
+        state.bots = [];
+        const strategies = ['SCALPER', 'HOLDER', 'DEGEN', 'SNIPER'];
+        for(let i=0; i<CONSTANTS.BOT_COUNT; i++) {
+            state.bots.push({
+                id: `Bot-${i+1000}`,
+                strategy: strategies[Math.floor(Math.random() * strategies.length)],
+                balance: 10000 + Math.random() * 5000, 
+                risk: Math.random(),
+                wins: 0, losses: 0, totalPnl: 0, holdings: {}
+            });
+        }
+    }
+
+    // --- PLAYERS LOGIC ---
+    function renderPlayersView() {
+        if(!globalData.users) return;
+        const list = Object.entries(globalData.users).map(([name, data]) => {
+            if(name === currentUser) return ''; 
+            let netWorth = data.usd || 0;
+            if(data.holdings) {
+                Object.entries(data.holdings).forEach(([tid, h]) => {
+                    const t = state.tokens[tid];
+                    if(t && h.tokens > 0) netWorth += h.tokens * (t.marketCap / t.totalSupply);
+                });
+            }
+            return `
+            <div class="player-card glass-panel p-4 rounded-xl border border-slate-700 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg">
+                        ${name.substring(0,2).toUpperCase()}
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">${name}</h3>
+                        <p class="text-xs text-gray-400">Net Worth: <span class="text-green-400 font-mono">$${formatNumber(netWorth, 'compact')}</span></p>
+                    </div>
+                </div>
+                <button onclick="openSendModal('${name}')" class="p-2 rounded-lg bg-slate-700 text-indigo-300 hover:bg-indigo-600 hover:text-white transition" title="Enviar Dinero">
+                    <i class="ph ph-paper-plane-right"></i>
+                </button>
+            </div>
+            `;
+        }).join('');
+        
+        DOM.playersList.innerHTML = list || '<p class="text-gray-500">No hay otros jugadores conectados.</p>';
+    }
+
+    function openSendModal(toUser) {
+        state.transferTarget = toUser;
+        DOM.sendTo.innerText = toUser;
+        DOM.sendAmt.value = '';
+        DOM.sendModal.classList.remove('hidden');
+    }
+
+    function confirmSendMoney() {
+        const amt = parseFloat(DOM.sendAmt.value);
+        const to = state.transferTarget;
+        
+        if(!amt || amt <= 0) return showModal('Error', 'Monto inválido');
+        if(state.user.usd < amt) return showModal('Error', 'Fondos insuficientes');
+        
+        state.user.usd -= amt;
+        
+        if(!globalData.transfers) globalData.transfers = [];
+        globalData.transfers.push({
+            id: Date.now() + Math.random().toString(),
+            from: currentUser,
+            to: to,
+            amount: amt,
+            claimed: false,
+            timestamp: Date.now()
+        });
+        
+        syncToServer(true); 
+        DOM.sendModal.classList.add('hidden');
+        showModal('Enviado', `Has enviado $${amt} a ${to}`);
+        updateUI();
+    }
+
+    // --- CREATE ---
+    async function handleCreate() {
+        const name = DOM.createName.value.toUpperCase();
+        const theme = DOM.createTheme.value;
+        const desc = DOM.createDesc.value || "Sin descripción.";
+        const supply = parseFloat(DOM.createSupply.value) || 1000000000;
+        const autoBuy = parseFloat(DOM.createAutoBuy.value) || 0;
+        const exchange = state.createMode || 'Met Liquidity';
+
+        if(!name) return showModal('Error', 'Necesitas un símbolo (Ticker)');
+        if(state.user.usd < 10) return showModal('Error', 'No tienes $10 para lanzar'); 
+
+        let imageUrl = CONSTANTS.DEFAULT_ICON;
+        if(DOM.createImgFile.files && DOM.createImgFile.files[0]) {
+            try { imageUrl = await toBase64(DOM.createImgFile.files[0]); } catch(e) {}
+        } else if(DOM.createImgUrl.value) { imageUrl = DOM.createImgUrl.value; }
+
+        const newTokenId = name + '-' + Date.now();
+        const newToken = {
+            id: newTokenId,
+            name: name,
+            theme: theme,
+            desc: desc,
+            image: imageUrl,
+            totalSupply: supply,
+            marketCap: exchange === 'Met Liquidity' ? 0 : 5000,
+            liquidityDepth: 0,
+            exchange: exchange,
+            liqAdded: exchange !== 'Met Liquidity', 
+            conviction: 50,
+            quality: 50,
+            creator: currentUser,
+            createdAt: Date.now(),
+            chartData: { '1s': [], '1m': [] },
+            tradeLog: [] 
+        };
+
+        state.user.usd -= 10;
+        state.tokens[newTokenId] = newToken;
+        
+        if(autoBuy > 0) {
+            if(state.user.usd < autoBuy) {
+                 state.user.usd += 10; 
+                 delete state.tokens[newTokenId];
+                 return showModal('Error', 'Fondos insuficientes para auto-compra');
+            }
+            const prevToken = state.activeToken;
+            state.activeToken = newToken; 
+            executeTrade(currentUser, 'BUY', autoBuy);
+            if(exchange === 'Met Liquidity') {
+                 newToken.liquidityDepth += autoBuy;
+                 newToken.liqAdded = true;
+            }
+            state.activeToken = prevToken;
+        }
+
+        if(newToken.liqAdded) generateChartHistory(newToken);
+
+        syncToServer(true);
+        renderMarket();
+        selectToken(newTokenId);
+        showModal('Éxito', `Token ${name} lanzado!`);
+    }
+
+    function renderDashboardRealtime() {
+        if(!state.activeToken) return;
+        const t = state.activeToken;
+        const price = t.marketCap > 0 ? t.marketCap / t.totalSupply : 0;
+        const isDev = t.creator === currentUser;
+
+        DOM.price.innerText = '$' + price.toFixed(9);
+        DOM.mc.innerText = '$' + formatNumber(t.marketCap, 'compact');
+        DOM.liq.innerText = '$' + formatNumber(t.liquidityDepth + (t.exchange==='AMM'?t.marketCap/5:0), 'compact');
+        DOM.holders.innerText = Object.keys(state.holders[t.id] || {}).length;
+        DOM.convictionVal.innerText = t.conviction.toFixed(1) + '%';
+        DOM.convictionFill.style.width = t.conviction + '%';
+        DOM.priceOverlay.innerText = '$' + price.toFixed(9);
+        
+        DOM.activeTokenImg.src = t.image || CONSTANTS.DEFAULT_ICON;
+        DOM.activeTokenImg.classList.remove('hidden');
+        DOM.activeTokenName.innerText = t.name;
+        DOM.activeTokenDesc.innerText = t.desc || "---";
+        
+        if(isDev) {
+            DOM.isDevBadge.classList.remove('hidden');
+            DOM.devControls.classList.remove('hidden');
+            DOM.tabDev.classList.remove('hidden');
+        } else {
+            DOM.isDevBadge.classList.add('hidden');
+            DOM.devControls.classList.add('hidden');
+            DOM.tabDev.classList.add('hidden');
+        }
+
+        drawChart();
+    }
+
+    function resizeChart() {
+        if(DOM.chartCont && DOM.chart) {
+            DOM.chart.width = DOM.chartCont.clientWidth;
+            DOM.chart.height = DOM.chartCont.clientHeight;
+            if (DOM.chart.width > 0 && DOM.chart.height > 0) {
+                drawChart();
+            }
+        }
+    }
+
+    function updateConviction(delta) {
+        if(state.activeToken) {
+            state.activeToken.conviction = Math.max(0, Math.min(100, state.activeToken.conviction + delta));
+        }
+    }
+
+    function setupEvents() {
+        DOM.navBtns.forEach(b => b.addEventListener('click', () => changeView(b.dataset.view)));
+        
+        DOM.btnLogin.addEventListener('click', () => authUser(false));
+        DOM.btnRegister.addEventListener('click', () => authUser(true));
+        DOM.btnLogout.addEventListener('click', logout);
+
+        if(DOM.btnLaunch) DOM.btnLaunch.addEventListener('click', handleCreate);
+        DOM.createBtns.forEach(b => b.addEventListener('click', (e) => {
+            state.createMode = e.target.dataset.exchange;
+            DOM.createBtns.forEach(x => x.classList.remove('bg-indigo-600', 'text-white')); 
+            e.target.classList.add('bg-indigo-600', 'text-white');
+            if(state.createMode === 'Met Liquidity') { DOM.createSupply.classList.remove('hidden'); DOM.createAutoBuy.classList.add('hidden'); }
+            else { DOM.createSupply.classList.add('hidden'); DOM.createAutoBuy.classList.remove('hidden'); }
+            DOM.btnLaunch.disabled = false;
+        }));
+        
+        if(DOM.tokenSelector) DOM.tokenSelector.addEventListener('change', (e) => { if(e.target.value) selectToken(e.target.value); });
+        if(DOM.buyBtn) DOM.buyBtn.addEventListener('click', () => handleTrade(true));
+        if(DOM.sellBtn) DOM.sellBtn.addEventListener('click', () => handleTrade(false));
+        DOM.quickBtns.forEach(b => b.addEventListener('click', (e) => handleQuickSell(parseInt(e.target.dataset.percentage))));
+        
+        if(DOM.btnShowPnl) DOM.btnShowPnl.addEventListener('click', () => showPnLCard(null));
+        if(DOM.pnlClose) DOM.pnlClose.addEventListener('click', () => DOM.pnlModal.classList.add('hidden'));
+        
+        if(DOM.btnOpenLiq) DOM.btnOpenLiq.addEventListener('click', openLiquidityModal);
+        if(DOM.liqClose) DOM.liqClose.addEventListener('click', () => DOM.liqModal.classList.add('hidden'));
+        DOM.liqTabs.forEach(t => t.addEventListener('click', (e) => switchLiqTab(e.target.dataset.liqMode)));
+        if(DOM.liqInUsd) DOM.liqInUsd.addEventListener('input', updateLiquidityCalculations);
+        if(DOM.liqConfirm) DOM.liqConfirm.addEventListener('click', confirmLiquidity);
+        
+        if(DOM.sendClose) DOM.sendClose.addEventListener('click', () => DOM.sendModal.classList.add('hidden'));
+        if(DOM.sendConfirm) DOM.sendConfirm.addEventListener('click', confirmSendMoney);
+        
+        if(DOM.mClose) DOM.mClose.addEventListener('click', () => DOM.modal.classList.add('hidden'));
+        if(DOM.bmClose) DOM.bmClose.addEventListener('click', () => DOM.botModal.classList.add('hidden'));
+
+        DOM.tfBtns.forEach(b => b.addEventListener('click', (e) => {
+            state.timeframe = e.target.dataset.tf;
+            DOM.tfBtns.forEach(btn => { 
+                btn.classList.remove('bg-indigo-600', 'text-white'); 
+                btn.classList.add('bg-slate-700', 'text-gray-400'); 
+            });
+            e.target.classList.remove('bg-slate-700', 'text-gray-400');
+            e.target.classList.add('bg-indigo-600', 'text-white');
+            resizeChart();
+        }));
+
+        DOM.createImgFile.addEventListener('change', async (e) => {
+            if(e.target.files && e.target.files[0]) {
+                const b64 = await toBase64(e.target.files[0]);
+                DOM.createImgPreview.src = b64;
+                DOM.createImgPreview.classList.remove('opacity-50');
+            }
+        });
+        DOM.createImgUrl.addEventListener('input', (e) => {
+            if(e.target.value) {
+                DOM.createImgPreview.src = e.target.value;
+                DOM.createImgPreview.classList.remove('opacity-50');
+            }
+        });
+
+        // --- CONEXIÓN DE BOTONES HYPE (NUEVO) ---
+        if(DOM.btnBurn1) DOM.btnBurn1.addEventListener('click', () => handleDevAction('burn', 1));
+        if(DOM.btnBurn10) DOM.btnBurn10.addEventListener('click', () => handleDevAction('burn', 10));
+        if(DOM.btnAudit) DOM.btnAudit.addEventListener('click', () => handleDevAction('audit'));
+        if(DOM.btnPartner) DOM.btnPartner.addEventListener('click', () => handleDevAction('hype'));
+        if(DOM.btnInf) DOM.btnInf.addEventListener('click', () => handleDevAction('influencer'));
+
+        DOM.tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                DOM.tabs.forEach(t => { t.classList.remove('tab-active'); t.classList.add('tab-inactive'); });
+                tab.classList.add('tab-active'); tab.classList.remove('tab-inactive');
+                DOM.tabContents.forEach(c => c.classList.add('hidden'));
+                document.querySelector(`[data-tab-content="${tab.dataset.tab}"]`).classList.remove('hidden');
+                if(tab.dataset.tab === 'holders') renderHoldersListTab();
+                if(tab.dataset.tab === 'top') renderTopTradesTab();
+                if(tab.dataset.tab === 'rekt') renderRektTradesTab();
+            });
+        });
+    }
+
+    function gameLoop() {
+        if(!state.activeToken) return;
+        const t = state.activeToken;
+        if(t.exchange === 'Met Liquidity' && !t.liqAdded) return;
+        
+        if(t.creator === currentUser) {
+            for(let i=0; i<5; i++) {
+                const bot = state.bots[Math.floor(Math.random()*state.bots.length)];
+                processBotAction(bot, t);
+            }
+            updateChartDataPoint(t);
+        }
+        
+        renderDashboardRealtime();
+        updateUI(); 
+    }
+
+    function processBotAction(bot, token) {
+        if(!state.holders[token.id]) state.holders[token.id] = {};
+        const holding = state.holders[token.id][bot.id];
+        
+        if(!holding || holding.tokens <= 0) {
+            const score = (token.conviction + token.quality) / 2;
+            if(Math.random() < (score/5000)) { 
+                const amt = bot.balance * (0.001 + bot.risk*0.005);
+                if(amt > 1) executeTrade(bot.id, 'BUY', amt);
+            }
+        } 
+        else {
+            const pnl = (token.marketCap - holding.avgEntryMC) / holding.avgEntryMC;
+            let sell = false;
+            if(bot.strategy === 'SCALPER' && (pnl > 0.1 || pnl < -0.02)) sell = Math.random()<0.9;
+            if(bot.strategy === 'HOLDER' && (pnl > 3.0 || pnl < -0.9)) sell = Math.random()<0.2;
+            if(bot.strategy === 'DEGEN' && (pnl > 1.0 || pnl < -0.5)) sell = Math.random()<0.5;
+            
+            if(sell) {
+                const pct = Math.random() > 0.5 ? 1.0 : 0.5;
+                const amtUsd = (holding.tokens * pct) * (token.marketCap/token.totalSupply);
+                if(amtUsd > 1) executeTrade(bot.id, 'SELL', amtUsd); 
+            }
+        }
+    }
+
+    function executeTrade(actorId, type, amountUSD) {
+        const t = state.activeToken;
+        if(!t) return;
+        const isLocalUser = (actorId === currentUser);
+
+        if(!t.liqAdded) { if(isLocalUser) showModal('Error','Sin liquidez en el pool'); return; }
+        
+        const price = t.marketCap > 0 ? t.marketCap / t.totalSupply : 0.0000001; 
+        const liq = Math.max(1000, t.marketCap/10) + (t.liquidityDepth||0);
+        const impact = Math.min(0.8, amountUSD / liq);
+        
+        if(type === 'BUY') {
+            t.marketCap += amountUSD;
+            const execPrice = price * (1 + impact);
+            const tokens = amountUSD / execPrice;
+            
+            if(!state.holders[t.id]) state.holders[t.id] = {};
+            if(!state.holders[t.id][actorId]) state.holders[t.id][actorId] = {tokens:0, avgEntryMC:t.marketCap, cost:0};
+            
+            const h = state.holders[t.id][actorId];
+            if(h.tokens + tokens > 0) {
+                 h.avgEntryMC = ((h.tokens * (h.avgEntryMC || t.marketCap)) + (tokens * t.marketCap)) / (h.tokens + tokens);
+            }
+            h.tokens += tokens;
+            h.cost = (h.cost || 0) + amountUSD;
+            t.conviction = Math.min(100, t.conviction+0.2);
+
+            if(isLocalUser) {
+                if(!state.user.holdings[t.id]) state.user.holdings[t.id] = {tokens:0, cost:0, avgEntryMC: t.marketCap};
+                const uh = state.user.holdings[t.id];
+                const totalTok = uh.tokens + tokens;
+                const weightedMC = ((uh.tokens * (uh.avgEntryMC || t.marketCap)) + (tokens * t.marketCap)) / totalTok;
+                uh.avgEntryMC = weightedMC;
+                uh.tokens += tokens;
+                uh.cost += amountUSD;
+                state.user.usd -= amountUSD;
+                
+                // Add to Global Trade Log
+                if(!t.tradeLog) t.tradeLog = [];
+                t.tradeLog.unshift({ t: Date.now(), who: 'TÚ', type: 'BUY', amt: amountUSD });
+            } else {
+                if(!t.tradeLog) t.tradeLog = [];
+                if(Math.random()>0.8) t.tradeLog.unshift({ t: Date.now(), who: actorId, type: 'BUY', amt: amountUSD });
+            }
+        } else {
+            t.marketCap -= amountUSD;
+            if(t.marketCap < 100) t.marketCap = 100;
+            const execPrice = price * (1 - impact);
+            const tokens = amountUSD / price; 
+            
+            if(state.holders[t.id][actorId]) {
+                const h = state.holders[t.id][actorId];
+                if(!isLocalUser) {
+                    const profit = amountUSD - (tokens * (h.avgEntryMC/t.totalSupply));
+                    const b = state.bots.find(x=>x.id===actorId);
+                    if(b) { b.totalPnl+=profit; profit>0 ? b.wins++ : b.losses++; }
+                }
+                h.tokens -= tokens;
+                if(h.tokens < 0) h.tokens = 0;
+            }
+            t.conviction = Math.max(0, t.conviction-0.5);
+
+            if(isLocalUser) {
+                const uh = state.user.holdings[t.id];
+                const pctSold = tokens / uh.tokens;
+                uh.cost = uh.cost * (1 - pctSold); 
+                uh.tokens -= tokens;
+                if(uh.tokens < 0) uh.tokens = 0;
+                state.user.usd += amountUSD; 
+                
+                if(!t.tradeLog) t.tradeLog = [];
+                t.tradeLog.unshift({ t: Date.now(), who: 'TÚ', type: 'SELL', amt: amountUSD });
+            } else {
+                if(!t.tradeLog) t.tradeLog = [];
+                if(Math.random()>0.8) t.tradeLog.unshift({ t: Date.now(), who: actorId, type: 'SELL', amt: amountUSD });
+            }
+        }
+        
+        t.price = t.marketCap / t.totalSupply;
+        
+        if(t.tradeLog.length > 50) t.tradeLog.pop();
+        
+        updateChartImmediate(t);
+        renderLog(t);
+    }
+
+    function renderLog(t) {
+        if(!DOM.tradeLog) return;
+        DOM.tradeLog.innerHTML = (t.tradeLog || []).map(l => {
+            const color = l.type === 'BUY' ? 'text-green-400' : 'text-red-400';
+            return `<div class="text-[10px] font-mono border-b border-gray-700 py-1">
+                <span class="text-gray-500">${new Date(l.t).toLocaleTimeString()}</span> 
+                <span class="font-bold text-white">${l.who}</span> 
+                <span class="${color}">${l.type}</span> $${formatNumber(l.amt, 'compact')}
+            </div>`;
+        }).join('');
+    }
+
+    // --- CHART UPGRADE WITH SYNC ---
+    function updateChartDataPoint(t) {
+        if(!t.chartData) t.chartData = { '1s': [], '1m': [] };
+        
+        const mc = t.marketCap;
+        const now = Date.now();
+        
+        // 1s Data
+        const d1 = t.chartData['1s'];
+        if(d1.length===0) d1.push({t:now, o:mc, h:mc, l:mc, c:mc});
+        else {
+            const l = d1[d1.length-1];
+            if(now - l.t < 1000) { l.c=mc; l.h=Math.max(l.h,mc); l.l=Math.min(l.l,mc); } 
+            else { d1.push({t:now, o:l.c, h:mc, l:mc, c:mc}); if(d1.length>300) d1.shift(); } 
+        }
+        // 1m Data
+        const dM = t.chartData['1m'];
+        if(dM.length===0) dM.push({t:now, o:mc, h:mc, l:mc, c:mc});
+        else {
+            const l = dM[dM.length-1];
+            if(now - l.t < 60000) { l.c=mc; l.h=Math.max(l.h,mc); l.l=Math.min(l.l,mc); }
+            else { dM.push({t:now, o:l.c, h:mc, l:mc, c:mc}); if(dM.length>200) dM.shift(); }
+        }
+    }
+    
+    function updateChartImmediate(t) {
+        if(!t.chartData) return;
+        const d = t.chartData['1s'];
+        if(d.length > 0) d[d.length-1].c = t.marketCap;
+    }
+
+    function drawChart() {
+        if(!chartCtx || !state.activeToken) return;
+        
+        // Update dimensions if canvas doesn't match container, but avoid circular call if container is 0
+        if (DOM.chartCont.clientWidth > 0 && DOM.chartCont.clientHeight > 0) {
+             if (DOM.chart.width !== DOM.chartCont.clientWidth || DOM.chart.height !== DOM.chartCont.clientHeight) {
+                 DOM.chart.width = DOM.chartCont.clientWidth;
+                 DOM.chart.height = DOM.chartCont.clientHeight;
+             }
+        } else {
+            return; // Container is hidden or 0 size, stop drawing
+        }
+        
+        const w = DOM.chart.width;
+        const h = DOM.chart.height;
+        
+        chartCtx.fillStyle = '#0b1221'; chartCtx.fillRect(0,0,w,h);
+        
+        const t = state.activeToken;
+        if(!t.chartData) { t.chartData = { '1s':[], '1m':[] }; }
+
+        if(t.exchange === 'Met Liquidity' && !t.liqAdded) {
+            chartCtx.fillStyle = '#64748b'; chartCtx.font='12px monospace'; chartCtx.textAlign='center';
+            chartCtx.fillText("ESPERANDO LIQUIDEZ...", w/2, h/2); return;
+        }
+
+        const d = state.timeframe === '1m' ? t.chartData['1m'] : t.chartData['1s'];
+        if(d.length < 2) return;
+
+        let min=Infinity, max=-Infinity;
+        d.forEach(p=>{if(p.l<min)min=p.l; if(p.h>max)max=p.h});
+        const range = max-min || 1;
+        const visibleCount = state.timeframe === '1s' ? 120 : 60;
+        const startIndex = Math.max(0, d.length - visibleCount);
+        const visibleData = d.slice(startIndex);
+        const cw = (w - 60) / visibleData.length;
+
+        chartCtx.strokeStyle = '#1e293b'; chartCtx.lineWidth = 1;
+        chartCtx.beginPath();
+        for(let i=1; i<5; i++) {
+            const y = h - 30 - (i * (h-60)/5);
+            chartCtx.moveTo(0, y); chartCtx.lineTo(w, y);
+        }
+        chartCtx.stroke();
+
+        visibleData.forEach((p,i)=>{
+            const x = i*cw + 10;
+            const yO = h-30 - ((p.o-min)/range)*(h-60);
+            const yC = h-30 - ((p.c-min)/range)*(h-60);
+            const yH = h-30 - ((p.h-min)/range)*(h-60);
+            const yL = h-30 - ((p.l-min)/range)*(h-60);
+            
+            const color = p.c >= p.o ? '#10b981' : '#ef4444';
+            chartCtx.strokeStyle = color; chartCtx.lineWidth=1;
+            
+            chartCtx.beginPath(); chartCtx.moveTo(x+cw/2, yH); chartCtx.lineTo(x+cw/2, yL); chartCtx.stroke();
+            chartCtx.fillStyle = color;
+            const hBody = Math.max(1, Math.abs(yC-yO));
+            chartCtx.fillRect(x, Math.min(yO,yC), cw-1, hBody);
+        });
+        
+        const curY = h-30 - ((t.marketCap-min)/range)*(h-60);
+        chartCtx.setLineDash([5,5]); chartCtx.strokeStyle='#cbd5e1';
+        chartCtx.beginPath(); chartCtx.moveTo(0, curY); chartCtx.lineTo(w, curY); chartCtx.stroke(); chartCtx.setLineDash([]);
+        
+        chartCtx.fillStyle = '#1e293b'; chartCtx.fillRect(w-55, curY-10, 50, 20);
+        chartCtx.fillStyle = '#fff'; chartCtx.font = '10px monospace'; chartCtx.fillText(formatNumber(t.marketCap, 'compact'), w-50, curY+4);
+    }
+
+    function generateChartHistory(t) { 
+        const now = Date.now();
+        t.chartData = {
+            '1s': [{t:now, o:t.marketCap, h:t.marketCap, l:t.marketCap, c:t.marketCap}],
+            '1m': [{t:now, o:t.marketCap, h:t.marketCap, l:t.marketCap, c:t.marketCap}]
+        };
+    }
+
+    // --- PNL FUNCTIONALITY ---
+    function showPnLCard(specificTokenId = null) {
+        let totalVal = 0;
+        let totalCost = 0;
+        let count = 0;
+        let tokenName = "PORTFOLIO TOTAL";
+
+        if(specificTokenId && state.tokens[specificTokenId]) {
+             const h = state.user.holdings[specificTokenId];
+             const t = state.tokens[specificTokenId];
+             if(h) {
+                 const curPrice = t.marketCap / t.totalSupply;
+                 totalVal = h.tokens * curPrice;
+                 totalCost = h.cost;
+                 count = 1;
+                 tokenName = t.name;
+             }
+        } else {
+            Object.entries(state.user.holdings).forEach(([id, h]) => {
+                const t = state.tokens[id];
+                if(h.tokens > 0 && t) { 
+                    const curPrice = t.marketCap / t.totalSupply;
+                    totalVal += h.tokens * curPrice;
+                    totalCost += h.cost;
+                    count++; 
+                }
+            });
+            tokenName = "TOTAL PORTFOLIO";
+        }
+        
+        const pnl = totalVal - totalCost;
+        const pct = totalCost > 0 ? (pnl / totalCost) * 100 : 0;
+        
+        DOM.pnlAmt.innerText = (pnl>=0?'+':'') + '$' + formatNumber(pnl);
+        DOM.pnlAmt.className = `text-5xl font-mono font-bold tracking-tighter drop-shadow-lg ${pnl>=0?'text-green-400':'text-red-400'}`;
+        DOM.pnlPct.innerText = (pnl>=0?'+':'') + pct.toFixed(2) + '%';
+        DOM.pnlBox.className = `inline-block px-3 py-1 rounded-full border backdrop-blur ${pnl>=0?'bg-green-500/10 border-green-500/30 text-green-300':'bg-red-500/10 border-red-500/30 text-red-300'}`;
+        DOM.pnlNw.innerText = '$' + formatNumber(state.user.usd + totalVal);
+        DOM.pnlTok.innerText = count;
+        DOM.pnlStamp.innerText = pnl >= 0 ? "WAGMI" : "REKT";
+        DOM.pnlStamp.className = `pnl-stamp ${pnl>=0?'text-green-500 border-green-500':'text-red-500 border-red-500'}`;
+        DOM.pnlTokenName.innerText = tokenName;
+        DOM.pnlTokenName.classList.remove('hidden');
+        DOM.pnlModal.classList.remove('hidden');
+    }
+
+    // --- LIQUIDITY & UTILS ---
+    function openLiquidityModal() {
+        if(!state.activeToken) return;
+        // DEV CHECK
+        if(state.activeToken.creator !== currentUser) return showModal("Acceso Denegado", "Solo el creador puede gestionar la liquidez.");
+        
+        DOM.liqModal.classList.remove('hidden');
+        switchLiqTab('add');
+        updateLiqUI();
+    }
+    
+    function switchLiqTab(mode) {
+        state.liqMode = mode;
+        DOM.liqTabs.forEach(t => t.dataset.liqMode === mode ? t.classList.add('liq-tab-active') : t.classList.remove('liq-tab-active'));
+        DOM.liqConfirm.innerText = mode === 'add' ? 'Confirmar Provisión' : 'Remover Liquidez';
+        DOM.liqConfirm.className = `w-full mt-6 py-3 rounded-2xl font-bold text-white shadow-lg transition ${mode==='add'?'bg-cyan-600 hover:bg-cyan-500':'bg-red-600 hover:bg-red-500'}`;
+    }
+    
+    function updateLiqUI() {
+        const t = state.activeToken;
+        const h = state.user.holdings[t.id];
+        DOM.liqTokSym.innerText = t.name;
+        DOM.liqTokBal.innerText = 'Bal: ' + formatNumber(h?h.tokens:0, 'compact');
+        DOM.liqUsdBal.innerText = 'Bal: $' + formatNumber(state.user.usd, 'compact');
+        DOM.liqStatus.innerText = t.liqAdded ? 'Activo' : 'Pausado (Sin Liq)';
+        DOM.liqStatus.className = t.liqAdded ? 'text-green-400 font-bold' : 'text-yellow-400 font-bold';
+    }
+    
+    function updateLiquidityCalculations() {
+        if(state.liqMode === 'remove' || !state.activeToken) return;
+        const usd = parseFloat(DOM.liqInUsd.value) || 0;
+        const price = state.activeToken.marketCap > 0 ? state.activeToken.marketCap / state.activeToken.totalSupply : 0;
+        if(price > 0) DOM.liqInToken.value = (usd / price).toFixed(2);
+    }
+    
+    function confirmLiquidity() {
+        const t = state.activeToken;
+        if(t.creator !== currentUser) return showModal("Error", "No autorizado");
+
+        if(state.liqMode === 'add') {
+            const usd = parseFloat(DOM.liqInUsd.value);
+            const reqTok = parseFloat(DOM.liqInToken.value);
+            if(state.user.usd < usd) return showModal('Error','Falta USD');
+            if(!state.user.holdings[t.id] || state.user.holdings[t.id].tokens < reqTok) return showModal('Error','Faltan Tokens');
+            state.user.usd -= usd;
+            state.user.holdings[t.id].tokens -= reqTok;
+            t.liqAdded = true; 
+            t.liquidityDepth = (t.liquidityDepth||0) + usd;
+            if(!t.chartData) generateChartHistory(t);
+            showModal('Éxito', 'Liquidez Añadida. Trading Habilitado.');
+        } else {
+            t.liqAdded = false;
+            state.user.usd += 1000;
+            showModal('Retiro', 'Liquidez removida. Trading Pausado.');
+        }
+        DOM.liqModal.classList.add('hidden');
+        updateUI();
+        syncToServer();
+    }
+
+    function selectToken(id) {
+        if(!state.tokens[id]) return;
+        state.activeToken = state.tokens[id];
+        state.user.activeTokenId = id;
+        
+        if(DOM.tokenSelector.options.length <= 1) {
+            DOM.tokenSelector.innerHTML = '<option value="">Seleccionar...</option>';
+            Object.values(state.tokens).forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.innerText = t.name;
+                DOM.tokenSelector.appendChild(opt);
+            });
+        }
+        DOM.tokenSelector.value = id;
+        
+        // CORRECCIÓN: Si el token ya tiene chartData, NO LO BORRES.
+        // Solo generar si está vacío y tiene liquidez.
+        if(state.activeToken.liqAdded && (!state.activeToken.chartData || !state.activeToken.chartData['1s'])) {
+            generateChartHistory(state.activeToken);
+        }
+        
+        DOM.btnOpenLiqTxt.innerText = state.activeToken.exchange === 'Met Liquidity' ? 'Gestión Liquidez' : 'AMM (Auto)';
+        
+        // Disable Dev Tools button for non-creators in UI (Logic handled in click)
+        const isDev = state.activeToken.creator === currentUser;
+        DOM.btnOpenLiq.classList.toggle('opacity-50', !isDev);
+        
+        changeView('dashboard');
+        renderDashboardRealtime();
+        renderHoldersListTab();
+        renderTopTradesTab();
+        renderRektTradesTab();
+        renderLog(state.activeToken);
+    }
+
+    function handleTrade(isBuy) {
+        const val = parseFloat(DOM.tradeAmt.value);
+        if(!val) return;
+        if(isBuy && state.user.usd < val) return showModal('Error','Saldo insuficiente');
+        executeTrade(currentUser, isBuy?'BUY':'SELL', val);
+        updateUI();
+    }
+    
+    function handleQuickSell(pct) {
+        if(!state.activeToken) return;
+        const h = state.user.holdings[state.activeToken.id];
+        if(!h || h.tokens <= 0) return;
+        const price = state.activeToken.marketCap / state.activeToken.totalSupply;
+        const usdVal = (h.tokens * price) * (pct/100);
+        executeTrade(currentUser, 'SELL', usdVal);
+        updateUI();
+    }
+
+    function updateUI() {
+        DOM.balanceUsd.innerText = '$'+formatNumber(state.user.usd);
+        if(state.activeToken) {
+            const h = state.user.holdings[state.activeToken.id];
+            DOM.balanceToken.innerText = h ? formatNumber(h.tokens, 'compact') : '0';
+            const price = state.activeToken.marketCap > 0 ? state.activeToken.marketCap / state.activeToken.totalSupply : 0;
+            const curVal = (h ? h.tokens : 0) * price;
+            const cost = h ? h.cost : 0;
+            const diff = curVal - cost;
+            const pct = cost > 0 ? (diff/cost)*100 : 0;
+            DOM.userPnl.innerText = `${diff>=0?'+':''}$${formatNumber(diff)} (${pct.toFixed(1)}%)`;
+            DOM.userPnl.className = `font-mono font-bold ${diff>=0?'text-green-400':'text-red-400'}`;
+            DOM.userEntry.innerText = '$'+formatNumber(cost);
+        }
+    }
+
+    function renderMarket() {
+        DOM.marketList.innerHTML = Object.values(state.tokens).map(t => 
+            `<div class="glass-panel p-4 rounded-xl border border-slate-700 hover:border-indigo-500 cursor-pointer transition relative group">
+                <div class="flex justify-between items-center mb-2" onclick="selectToken('${t.id}')">
+                    <div class="flex items-center gap-3">
+                        <img src="${t.image || CONSTANTS.DEFAULT_ICON}" class="token-icon bg-black" alt="icon">
+                        <span class="font-bold text-white text-lg">${t.name}</span>
+                    </div>
+                    <span class="text-[10px] bg-slate-700 px-2 rounded">${t.exchange}</span>
+                </div>
+                <div class="text-xs text-gray-400" onclick="selectToken('${t.id}')">MC: <span class="text-yellow-400 font-mono">$${formatNumber(t.marketCap,'compact')}</span></div>
+                
+                <button onclick="event.stopPropagation(); showPnLCard('${t.id}')" class="absolute bottom-4 right-4 p-1.5 rounded-full bg-slate-800 text-indigo-400 hover:bg-white hover:text-black transition shadow-lg z-10 opacity-0 group-hover:opacity-100" title="Ver PnL">
+                    <i class="ph ph-percent"></i>
+                </button>
+            </div>`
+        ).join('');
+        DOM.marketEmpty.style.display = Object.keys(state.tokens).length ? 'none' : 'block';
+    }
+
+    function renderHoldersListTab() {
+        if(!state.activeToken) return;
+        const list = Object.entries(state.holders[state.activeToken.id] || {})
+            .sort((a,b)=>b[1].tokens - a[1].tokens)
+            .slice(0,20);
+        DOM.holdersList.innerHTML = list.map(([id, h]) => 
+            `<div class="flex justify-between text-xs py-2 border-b border-gray-800 hover:bg-white/5 px-2 rounded">
+                <span class="${id===currentUser?'text-green-400 font-bold':'text-gray-400'}">${id===currentUser?'TÚ':id}</span>
+                <span class="font-mono text-white">${formatNumber(h.tokens,'compact')}</span>
+            </div>`
+        ).join('');
+    }
+    
+    function renderTopTradesTab() {
+        if(!state.activeToken) return;
+        const list = state.topTrades[state.activeToken.id] || [];
+        DOM.topList.innerHTML = list.map(t => 
+            `<div class="flex justify-between text-xs py-2 border-b border-gray-800 hover:bg-white/5 px-2 rounded">
+                <span class="text-blue-300">${t.name}</span>
+                <span class="text-green-400 font-mono font-bold">+$${formatNumber(t.pnl)}</span>
+            </div>`
+        ).join('');
+    }
+    
+    function renderRektTradesTab() {
+        if(!state.activeToken) return;
+        const list = state.topLosses[state.activeToken.id] || [];
+        DOM.rektList.innerHTML = list.map(t => 
+            `<div class="flex justify-between text-xs py-2 border-b border-gray-800 hover:bg-white/5 px-2 rounded">
+                <span class="text-gray-400">${t.name}</span>
+                <span class="text-red-400 font-mono font-bold">$${formatNumber(t.pnl)}</span>
+            </div>`
+        ).join('');
+    }
+    
+    function recordTopTrade(name, tokenName, pnl) { /* ... */ }
+    function recordTopLoss(name, tokenName, pnl) { /* ... */ }
+
+    function formatNumber(n, t) {
+        if(t==='compact') return n>1000000 ? (n/1000000).toFixed(1)+'M' : (n>1000 ? (n/1000).toFixed(1)+'k' : Math.floor(n));
+        return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+    function changeView(v) {
+        DOM.views.forEach(x => x.classList.add('hidden'));
+        const target = document.querySelector(`[data-view-id="${v}"]`);
+        if(target) target.classList.remove('hidden');
+        DOM.navBtns.forEach(b => {
+            if(b.dataset.view === v) {
+                b.classList.remove('bg-slate-700', 'text-gray-300');
+                b.classList.add('bg-indigo-600', 'text-white');
+            } else {
+                b.classList.add('bg-slate-700', 'text-gray-300');
+                b.classList.remove('bg-indigo-600', 'text-white');
+            }
+        });
+        if(v==='dashboard') { DOM.tokenCont.classList.remove('hidden'); setTimeout(resizeChart, 50); }
+        else DOM.tokenCont.classList.add('hidden');
+        if(v==='market') renderMarket();
+        if(v==='bots') renderBotsView();
+        if(v==='players') renderPlayersView();
+    }
+    function renderBotsView() {
+        const sorted = [...state.bots].sort((a,b)=>b.totalPnl - a.totalPnl);
+        DOM.botWinList.innerHTML = sorted.slice(0,5).map(b => `<div class="flex justify-between items-center p-3 bg-slate-800 rounded-xl border border-slate-700 hover:border-green-500 transition cursor-pointer" onclick="openBotModal('${b.id}')"><div class="flex items-center gap-2"><span class="text-xs text-gray-500 font-bold">#${state.bots.indexOf(b)+1}</span><div><p class="font-bold text-white text-sm">${b.id}</p><p class="text-[9px] uppercase text-gray-400">${b.strategy}</p></div></div><span class="text-green-400 font-mono font-bold">+$${formatNumber(b.totalPnl,'compact')}</span></div>`).join('');
+        DOM.botLoseList.innerHTML = sorted.slice(-5).reverse().map(b => `<div class="flex justify-between items-center p-3 bg-slate-800 rounded-xl border border-slate-700 hover:border-red-500 transition cursor-pointer" onclick="openBotModal('${b.id}')"><div class="flex items-center gap-2"><span class="text-xs text-gray-500 font-bold">💀</span><div><p class="font-bold text-white text-sm">${b.id}</p><p class="text-[9px] uppercase text-gray-400">${b.strategy}</p></div></div><span class="text-red-400 font-mono font-bold">$${formatNumber(b.totalPnl,'compact')}</span></div>`).join('');
+    }
+    function openBotModal(id) {
+        const b = state.bots.find(x=>x.id===id); 
+        if(!b) return;
+        DOM.bmName.innerText = b.id; DOM.bmStrat.innerText = b.strategy;
+        DOM.bmBal.innerText = '$'+formatNumber(b.balance); DOM.bmPnl.innerText = '$'+formatNumber(b.totalPnl);
+        DOM.bmWin.innerText = (b.wins+b.losses > 0 ? ((b.wins/(b.wins+b.losses))*100).toFixed(0) : 0) + '%';
+        DOM.botModal.classList.remove('hidden');
+    }
+    window.openBotModal = openBotModal; 
+    window.selectToken = selectToken; 
+    window.changeView = changeView; 
+    window.showPnLCard = showPnLCard;
+    window.openSendModal = openSendModal; // Export for onclick
+
+    function showModal(t, m) { DOM.mTitle.innerText=t; DOM.mContent.innerText=m; DOM.modal.classList.remove('hidden'); }
+    function logTrade(who, type, amountUSD) { /* Now handled by renderLog via token state */ }
+    
+    function startNewsTicker() {
+        const NEWS_EVENTS = ["Elon Musk tuiteó 🐶", "SEC aprueba ETF", "Vitalik vendió", "Binance listará", "Hacker roba $5M", "Gas baja a 5 gwei"];
+        setInterval(() => {
+            if (DOM.news) {
+                const news = NEWS_EVENTS[Math.floor(Math.random() * NEWS_EVENTS.length)];
+                DOM.news.textContent = news;
+                if (state.activeToken && state.simulationRunning) updateConviction((Math.random() - 0.5) * 5);
+            }
+        }, 8000);
+    }
+    function handleDevAction(action, val) {
+        if(!state.activeToken) return;
+        const t = state.activeToken;
+        // DEV PROTECTION
+        if(t.creator !== currentUser) return showModal("Error", "Solo el desarrollador puede ejecutar esto.");
+
+        let cost = 0; let msg = "";
+        switch(action) {
+            case 'burn': cost = 500 * (val ? val * 10 : 1);
+                if(state.user.usd < cost) { showModal("Error", "Faltan USD"); return; }
+                state.user.usd -= cost; t.marketCap += cost * 1.5; t.conviction = Math.min(100, t.conviction + 5); msg = "¡QUEMA EXITOSA!"; break;
+            case 'audit': cost = 500; if(state.user.usd < cost) { showModal("Error", "Faltan USD"); return; }
+                state.user.usd -= cost; t.quality = Math.min(100, t.quality + 15); msg = "AUDITORÍA COMPLETADA."; break;
+            case 'influencer': cost = CONSTANTS.INFLUENCER_COST; if(state.user.usd < cost) { showModal("Error", "Faltan USD"); return; }
+                state.user.usd -= cost; t.conviction = Math.min(100, t.conviction + 25); msg = "INFLUENCER CONTRATADO."; break;
+            case 'hype': cost = 500; if(state.user.usd < cost) { showModal("Error", "Faltan USD"); return; }
+                state.user.usd -= cost; t.conviction = Math.min(100, t.conviction + 10); msg = "PARTNERSHIP CERRADO."; break;
+            case 'liq_add': openLiquidityModal(); return;
+            case 'lock': msg = "Liquidez Bloqueada."; break;
+        }
+        syncToServer();
+        updateUI();
+        if(msg) showModal("Éxito", msg);
+    }
+
+    init();
+</script>
+</body>
+</html>
