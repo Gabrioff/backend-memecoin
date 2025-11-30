@@ -176,7 +176,7 @@
     "pass": "12345678"
   },
   "GabrioFF": {
-    "usd": 27042.16295746277,
+    "usd": null,
     "holdings": {
       "XDD-1764446901541": {
         "tokens": 100922.7254033061,
@@ -197,11 +197,6 @@
         "tokens": null,
         "cost": null,
         "avgEntryMC": 29435.77698886622
-      },
-      "MONAD-1764477758417": {
-        "tokens": 0,
-        "cost": 0,
-        "avgEntryMC": 10489.364550473172
       }
     },
     "pass": "Sc150610"
