@@ -153,10 +153,9 @@ app.get('/api/load', (req, res) => {
 });
 
 app.post('/api/stream', (req, res) => {
-    res.json({ success: true });
     try {
         const { data } = req.body;
-        if (!data) return;
+        if (!data) return res.json({ success: false });
 
         if (data.users) {
             Object.keys(data.users).forEach(u => {
@@ -179,6 +178,8 @@ app.post('/api/stream', (req, res) => {
                     ext.marketCap = inc.marketCap;
                     ext.price = inc.price;
                     ext.liquidityDepth = inc.liquidityDepth;
+                    ext.conviction = inc.conviction; // IMPORTANTE: Sincronizar conviction
+                    ext.quality = inc.quality;       // IMPORTANTE: Sincronizar quality
                     if(inc.holders) ext.holders = inc.holders;
                     if(inc.chartData) ext.chartData = inc.chartData;
                     if(inc.topTrades) ext.topTrades = inc.topTrades;
@@ -195,8 +196,22 @@ app.post('/api/stream', (req, res) => {
                 else if (!exists.claimed && tx.claimed) { exists.claimed = true; collections.transfers.dirty = true; }
             });
         }
+
+        // DEVOLVER EL ESTADO COMPLETO ACTUALIZADO
+        res.json({ 
+            success: true,
+            data: {
+                users: collections.users.data,
+                tokens: collections.tokens.data,
+                bots: collections.bots.data,
+                transfers: collections.transfers.data,
+                chat: [] 
+            }
+        });
+
     } catch (e) {
         console.error("Error procesando stream:", e);
+        res.status(500).json({ error: "Stream error" });
     }
 });
 
