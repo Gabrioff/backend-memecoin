@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "17644737152340.5974749994567493",
+    "from": "ADMIN",
+    "to": "GabrioFF",
+    "amount": 100000,
+    "claimed": false,
+    "timestamp": 1764473715234
+  }
+]
