@@ -4,7 +4,7 @@
     "from": "ADMIN",
     "to": "GabrioFF",
     "amount": 100000,
-    "claimed": false,
+    "claimed": true,
     "timestamp": 1764473715234
   }
 ]
